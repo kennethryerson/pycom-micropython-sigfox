@@ -56,6 +56,7 @@
 #define MICROPY_ENABLE_SOURCE_LINE                  (1)
 #define MICROPY_MODULE_WEAK_LINKS                   (1)
 #define MICROPY_CAN_OVERRIDE_BUILTINS               (1)
+#define MICROPY_PY_BUILTINS_INPUT                   (1)
 #define MICROPY_PY_BUILTINS_COMPLEX                 (1)
 #define MICROPY_PY_BUILTINS_STR_UNICODE             (1)
 #define MICROPY_PY_BUILTINS_BYTEARRAY               (1)
@@ -65,6 +66,8 @@
 #define MICROPY_PY_BUILTINS_SLICE                   (1)
 #define MICROPY_PY_BUILTINS_PROPERTY                (1)
 #define MICROPY_PY_BUILTINS_EXECFILE                (1)
+#define MICROPY_PY_BUILTINS_HELP                    (1)
+#define MICROPY_PY_BUILTINS_HELP_TEXT               pycom_help_text
 #define MICROPY_PY___FILE__                         (1)
 #define MICROPY_PY_GC                               (1)
 #define MICROPY_PY_ARRAY                            (1)
@@ -87,6 +90,7 @@
 #define MICROPY_PY_UCTYPES                          (1)
 #define MICROPY_PY_UHASHLIB                         (0)
 #define MICROPY_PY_UHASHLIB_SHA1                    (0)
+#define MICROPY_PY_USELECT                          (1)
 #define MICROPY_PY_UJSON                            (1)
 #define MICROPY_PY_URE                              (1)
 #define MICROPY_PY_MACHINE                          (1)
@@ -98,6 +102,7 @@
 #define MICROPY_ERROR_REPORTING                     (MICROPY_ERROR_REPORTING_NORMAL)
 #define MICROPY_OPT_COMPUTED_GOTO                   (1)
 #define MICROPY_OPT_CACHE_MAP_LOOKUP_IN_BYTECODE    (0)
+#define MICROPY_READER_VFS                          (1)
 #define MICROPY_REPL_AUTO_INDENT                    (1)
 #define MICROPY_COMP_MODULE_CONST                   (1)
 #define MICROPY_ENABLE_FINALISER                    (1)
@@ -125,15 +130,17 @@
 #endif
 
 // fatfs configuration used in ffconf.h
+#define MICROPY_FATFS_OO                            (1)
 #define MICROPY_FATFS_ENABLE_LFN                    (2)
 #define MICROPY_FATFS_MAX_LFN                       (MICROPY_ALLOC_PATH_MAX)
 #define MICROPY_FATFS_LFN_CODE_PAGE                 (437) // 1=SFN/ANSI 437=LFN/U.S.(OEM)
 #define MICROPY_FATFS_RPATH                         (2)
-#define MICROPY_FATFS_VOLUMES                       (2)
 #define MICROPY_FATFS_REENTRANT                     (1)
 #define MICROPY_FATFS_TIMEOUT                       (5000)
 #define MICROPY_FATFS_SYNC_T                        SemaphoreHandle_t
-#define MICROPY_FSUSERMOUNT_ADHOC                   (1)
+
+#define MICROPY_VFS                                 (1)
+#define MICROPY_VFS_FAT                             (1)
 
 // type definitions for the specific machine
 #define BYTES_PER_WORD                              (4)
@@ -141,6 +148,23 @@
 #define MP_SSIZE_MAX                                (0x7FFFFFFF)
 #define UINT_FMT                                    "%u"
 #define INT_FMT                                     "%d"
+
+#if MICROPY_PY_THREAD
+#define MICROPY_EVENT_POLL_HOOK \
+    do { \
+        extern void mp_handle_pending(void); \
+        mp_handle_pending(); \
+        MP_THREAD_GIL_EXIT(); \
+        MP_THREAD_GIL_ENTER(); \
+    } while (0);
+#else
+#define MICROPY_EVENT_POLL_HOOK \
+    do { \
+        extern void mp_handle_pending(void); \
+        mp_handle_pending(); \
+        asm("waiti 0"); \
+    } while (0);
+#endif
 
 typedef int32_t mp_int_t;                           // must be pointer size
 typedef uint32_t mp_uint_t;                         // must be pointer size
@@ -150,11 +174,18 @@ typedef long mp_off_t;
 
 #define MP_PLAT_PRINT_STRN(str, len)                mp_hal_stdout_tx_strn_cooked(str, len)
 
+// TODO these should be generic, not bound to fatfs
+#define mp_type_fileio fatfs_type_fileio
+#define mp_type_textio fatfs_type_textio
+
+// use vfs's functions for import stat and builtin open
+#define mp_import_stat mp_vfs_import_stat
+#define mp_builtin_open mp_vfs_open
+#define mp_builtin_open_obj mp_vfs_open_obj
+
 // extra built in names to add to the global namespace
 #define MICROPY_PORT_BUILTINS \
-    { MP_OBJ_NEW_QSTR(MP_QSTR_help),  (mp_obj_t)&mp_builtin_help_obj },   \
-    { MP_OBJ_NEW_QSTR(MP_QSTR_input), (mp_obj_t)&mp_builtin_input_obj },  \
-    { MP_OBJ_NEW_QSTR(MP_QSTR_open),  (mp_obj_t)&mp_builtin_open_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_open),  MP_ROM_PTR(&mp_builtin_open_obj) },
 
 // extra built in modules to add to the list of known ones
 extern const struct _mp_obj_module_t machine_module;
@@ -215,10 +246,8 @@ extern const struct _mp_obj_module_t mp_module_uqueue;
 
 #define MICROPY_PORT_ROOT_POINTERS \
     const char *readline_hist[8];                               \
-    mp_obj_t mp_kbd_exception;                                  \
     mp_obj_t machine_config_main;                               \
     mp_obj_t uart_buf[3];                                       \
-    mp_obj_list_t mount_obj_list;                               \
     mp_obj_list_t mp_irq_obj_list;                              \
     mp_obj_list_t mod_network_nic_list;                         \
     mp_obj_t mp_os_stream_o;                                    \

@@ -24,7 +24,6 @@
 #include "mpexception.h"
 #include "radio.h"
 #include "modnetwork.h"
-#include "pybioctl.h"
 #include "modusocket.h"
 #include "pycom_config.h"
 #include "mpirq.h"
@@ -2101,62 +2100,62 @@ STATIC mp_obj_t lora_nvram_erase (mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(lora_nvram_erase_obj, lora_nvram_erase);
 
-STATIC const mp_map_elem_t lora_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t lora_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                (mp_obj_t)&lora_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_join),                (mp_obj_t)&lora_join_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_tx_power),            (mp_obj_t)&lora_tx_power_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_bandwidth),           (mp_obj_t)&lora_bandwidth_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_frequency),           (mp_obj_t)&lora_frequency_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_coding_rate),         (mp_obj_t)&lora_coding_rate_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_preamble),            (mp_obj_t)&lora_preamble_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_sf),                  (mp_obj_t)&lora_sf_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_power_mode),          (mp_obj_t)&lora_power_mode_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_stats),               (mp_obj_t)&lora_stats_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_has_joined),          (mp_obj_t)&lora_has_joined_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_add_channel),         (mp_obj_t)&lora_add_channel_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_remove_channel),      (mp_obj_t)&lora_remove_channel_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_mac),                 (mp_obj_t)&lora_mac_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_compliance_test),     (mp_obj_t)&lora_compliance_test_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_callback),            (mp_obj_t)&lora_callback_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_events),              (mp_obj_t)&lora_events_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ischannel_free),      (mp_obj_t)&lora_ischannel_free_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_set_battery_level),   (mp_obj_t)&lora_set_battery_level_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_nvram_save),          (mp_obj_t)&lora_nvram_save_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_nvram_restore),       (mp_obj_t)&lora_nvram_restore_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_nvram_erase),         (mp_obj_t)&lora_nvram_erase_obj },
+    { MP_ROM_QSTR(MP_QSTR_init),                MP_ROM_PTR(&lora_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_join),                MP_ROM_PTR(&lora_join_obj) },
+    { MP_ROM_QSTR(MP_QSTR_tx_power),            MP_ROM_PTR(&lora_tx_power_obj) },
+    { MP_ROM_QSTR(MP_QSTR_bandwidth),           MP_ROM_PTR(&lora_bandwidth_obj) },
+    { MP_ROM_QSTR(MP_QSTR_frequency),           MP_ROM_PTR(&lora_frequency_obj) },
+    { MP_ROM_QSTR(MP_QSTR_coding_rate),         MP_ROM_PTR(&lora_coding_rate_obj) },
+    { MP_ROM_QSTR(MP_QSTR_preamble),            MP_ROM_PTR(&lora_preamble_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sf),                  MP_ROM_PTR(&lora_sf_obj) },
+    { MP_ROM_QSTR(MP_QSTR_power_mode),          MP_ROM_PTR(&lora_power_mode_obj) },
+    { MP_ROM_QSTR(MP_QSTR_stats),               MP_ROM_PTR(&lora_stats_obj) },
+    { MP_ROM_QSTR(MP_QSTR_has_joined),          MP_ROM_PTR(&lora_has_joined_obj) },
+    { MP_ROM_QSTR(MP_QSTR_add_channel),         MP_ROM_PTR(&lora_add_channel_obj) },
+    { MP_ROM_QSTR(MP_QSTR_remove_channel),      MP_ROM_PTR(&lora_remove_channel_obj) },
+    { MP_ROM_QSTR(MP_QSTR_mac),                 MP_ROM_PTR(&lora_mac_obj) },
+    { MP_ROM_QSTR(MP_QSTR_compliance_test),     MP_ROM_PTR(&lora_compliance_test_obj) },
+    { MP_ROM_QSTR(MP_QSTR_callback),            MP_ROM_PTR(&lora_callback_obj) },
+    { MP_ROM_QSTR(MP_QSTR_events),              MP_ROM_PTR(&lora_events_obj) },
+    { MP_ROM_QSTR(MP_QSTR_ischannel_free),      MP_ROM_PTR(&lora_ischannel_free_obj) },
+    { MP_ROM_QSTR(MP_QSTR_set_battery_level),   MP_ROM_PTR(&lora_set_battery_level_obj) },
+    { MP_ROM_QSTR(MP_QSTR_nvram_save),          MP_ROM_PTR(&lora_nvram_save_obj) },
+    { MP_ROM_QSTR(MP_QSTR_nvram_restore),       MP_ROM_PTR(&lora_nvram_restore_obj) },
+    { MP_ROM_QSTR(MP_QSTR_nvram_erase),         MP_ROM_PTR(&lora_nvram_erase_obj) },
 
     // class constants
-    { MP_OBJ_NEW_QSTR(MP_QSTR_LORA),                MP_OBJ_NEW_SMALL_INT(E_LORA_STACK_MODE_LORA) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_LORAWAN),             MP_OBJ_NEW_SMALL_INT(E_LORA_STACK_MODE_LORAWAN) },
+    { MP_ROM_QSTR(MP_QSTR_LORA),                MP_ROM_INT(E_LORA_STACK_MODE_LORA) },
+    { MP_ROM_QSTR(MP_QSTR_LORAWAN),             MP_ROM_INT(E_LORA_STACK_MODE_LORAWAN) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_OTAA),                MP_OBJ_NEW_SMALL_INT(E_LORA_ACTIVATION_OTAA) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ABP),                 MP_OBJ_NEW_SMALL_INT(E_LORA_ACTIVATION_ABP) },
+    { MP_ROM_QSTR(MP_QSTR_OTAA),                MP_ROM_INT(E_LORA_ACTIVATION_OTAA) },
+    { MP_ROM_QSTR(MP_QSTR_ABP),                 MP_ROM_INT(E_LORA_ACTIVATION_ABP) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ALWAYS_ON),           MP_OBJ_NEW_SMALL_INT(E_LORA_MODE_ALWAYS_ON) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_TX_ONLY),             MP_OBJ_NEW_SMALL_INT(E_LORA_MODE_TX_ONLY) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SLEEP),               MP_OBJ_NEW_SMALL_INT(E_LORA_MODE_SLEEP) },
+    { MP_ROM_QSTR(MP_QSTR_ALWAYS_ON),           MP_ROM_INT(E_LORA_MODE_ALWAYS_ON) },
+    { MP_ROM_QSTR(MP_QSTR_TX_ONLY),             MP_ROM_INT(E_LORA_MODE_TX_ONLY) },
+    { MP_ROM_QSTR(MP_QSTR_SLEEP),               MP_ROM_INT(E_LORA_MODE_SLEEP) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_BW_125KHZ),           MP_OBJ_NEW_SMALL_INT(E_LORA_BW_125_KHZ) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_BW_250KHZ),           MP_OBJ_NEW_SMALL_INT(E_LORA_BW_250_KHZ) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_BW_500KHZ),           MP_OBJ_NEW_SMALL_INT(E_LORA_BW_500_KHZ) },
+    { MP_ROM_QSTR(MP_QSTR_BW_125KHZ),           MP_ROM_INT(E_LORA_BW_125_KHZ) },
+    { MP_ROM_QSTR(MP_QSTR_BW_250KHZ),           MP_ROM_INT(E_LORA_BW_250_KHZ) },
+    { MP_ROM_QSTR(MP_QSTR_BW_500KHZ),           MP_ROM_INT(E_LORA_BW_500_KHZ) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CODING_4_5),          MP_OBJ_NEW_SMALL_INT(E_LORA_CODING_4_5) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CODING_4_6),          MP_OBJ_NEW_SMALL_INT(E_LORA_CODING_4_6) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CODING_4_7),          MP_OBJ_NEW_SMALL_INT(E_LORA_CODING_4_7) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CODING_4_8),          MP_OBJ_NEW_SMALL_INT(E_LORA_CODING_4_8) },
+    { MP_ROM_QSTR(MP_QSTR_CODING_4_5),          MP_ROM_INT(E_LORA_CODING_4_5) },
+    { MP_ROM_QSTR(MP_QSTR_CODING_4_6),          MP_ROM_INT(E_LORA_CODING_4_6) },
+    { MP_ROM_QSTR(MP_QSTR_CODING_4_7),          MP_ROM_INT(E_LORA_CODING_4_7) },
+    { MP_ROM_QSTR(MP_QSTR_CODING_4_8),          MP_ROM_INT(E_LORA_CODING_4_8) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RX_PACKET_EVENT),     MP_OBJ_NEW_SMALL_INT(MODLORA_RX_EVENT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_TX_PACKET_EVENT),     MP_OBJ_NEW_SMALL_INT(MODLORA_TX_EVENT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_TX_FAILED_EVENT),     MP_OBJ_NEW_SMALL_INT(MODLORA_TX_FAILED_EVENT) },
+    { MP_ROM_QSTR(MP_QSTR_RX_PACKET_EVENT),     MP_ROM_INT(MODLORA_RX_EVENT) },
+    { MP_ROM_QSTR(MP_QSTR_TX_PACKET_EVENT),     MP_ROM_INT(MODLORA_TX_EVENT) },
+    { MP_ROM_QSTR(MP_QSTR_TX_FAILED_EVENT),     MP_ROM_INT(MODLORA_TX_FAILED_EVENT) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CLASS_A),             MP_OBJ_NEW_SMALL_INT(CLASS_A) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CLASS_C),             MP_OBJ_NEW_SMALL_INT(CLASS_C) },
+    { MP_ROM_QSTR(MP_QSTR_CLASS_A),             MP_ROM_INT(CLASS_A) },
+    { MP_ROM_QSTR(MP_QSTR_CLASS_C),             MP_ROM_INT(CLASS_C) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_AS923),               MP_OBJ_NEW_SMALL_INT(LORAMAC_REGION_AS923) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_AU915),               MP_OBJ_NEW_SMALL_INT(LORAMAC_REGION_AU915) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_EU868),               MP_OBJ_NEW_SMALL_INT(LORAMAC_REGION_EU868) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_US915),               MP_OBJ_NEW_SMALL_INT(LORAMAC_REGION_US915) },
+    { MP_ROM_QSTR(MP_QSTR_AS923),               MP_ROM_INT(LORAMAC_REGION_AS923) },
+    { MP_ROM_QSTR(MP_QSTR_AU915),               MP_ROM_INT(LORAMAC_REGION_AU915) },
+    { MP_ROM_QSTR(MP_QSTR_EU868),               MP_ROM_INT(LORAMAC_REGION_EU868) },
+    { MP_ROM_QSTR(MP_QSTR_US915),               MP_ROM_INT(LORAMAC_REGION_US915) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(lora_locals_dict, lora_locals_dict_table);
@@ -2317,13 +2316,13 @@ static int lora_socket_ioctl (mod_network_socket_obj_t *s, mp_uint_t request, mp
     mp_int_t ret = 0;
 
     LORA_CHECK_SOCKET(s);
-    if (request == MP_IOCTL_POLL) {
+    if (request == MP_STREAM_POLL) {
         mp_uint_t flags = arg;
-        if ((flags & MP_IOCTL_POLL_RD) && lora_rx_any()) {
-            ret |= MP_IOCTL_POLL_RD;
+        if ((flags & MP_STREAM_POLL_RD) && lora_rx_any()) {
+            ret |= MP_STREAM_POLL_RD;
         }
-        if ((flags & MP_IOCTL_POLL_WR) && lora_tx_space()) {
-            ret |= MP_IOCTL_POLL_WR;
+        if ((flags & MP_STREAM_POLL_WR) && lora_tx_space()) {
+            ret |= MP_STREAM_POLL_WR;
         }
     } else {
         *_errno = MP_EINVAL;

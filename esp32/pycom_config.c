@@ -11,7 +11,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "diskio.h"
+#include "lib/oofatfs/ff.h"
+#include "lib/oofatfs/diskio.h"
 #include "sflash_diskio.h"
 #include "pycom_config.h"
 

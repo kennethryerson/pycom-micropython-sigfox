@@ -245,17 +245,17 @@ STATIC mp_obj_t adc_channel(mp_uint_t n_args, const mp_obj_t *pos_args, mp_map_t
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(adc_channel_obj, 1, adc_channel);
 
-STATIC const mp_map_elem_t adc_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                (mp_obj_t)&adc_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_deinit),              (mp_obj_t)&adc_deinit_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_channel),             (mp_obj_t)&adc_channel_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_vref),                (mp_obj_t)&adc_vref_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_vref_to_pin),         (mp_obj_t)&adc_vref_to_pin_obj },
+STATIC const mp_rom_map_elem_t adc_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_init),                MP_ROM_PTR(&adc_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_deinit),              MP_ROM_PTR(&adc_deinit_obj) },
+    { MP_ROM_QSTR(MP_QSTR_channel),             MP_ROM_PTR(&adc_channel_obj) },
+    { MP_ROM_QSTR(MP_QSTR_vref),                MP_ROM_PTR(&adc_vref_obj) },
+    { MP_ROM_QSTR(MP_QSTR_vref_to_pin),         MP_ROM_PTR(&adc_vref_to_pin_obj) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ATTN_0DB),            MP_OBJ_NEW_SMALL_INT(ADC_ATTEN_0db) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ATTN_2_5DB),          MP_OBJ_NEW_SMALL_INT(ADC_ATTEN_2_5db) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ATTN_6DB),            MP_OBJ_NEW_SMALL_INT(ADC_ATTEN_6db) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ATTN_11DB),           MP_OBJ_NEW_SMALL_INT(ADC_ATTEN_11db) },
+    { MP_ROM_QSTR(MP_QSTR_ATTN_0DB),            MP_ROM_INT(ADC_ATTEN_0db) },
+    { MP_ROM_QSTR(MP_QSTR_ATTN_2_5DB),          MP_ROM_INT(ADC_ATTEN_2_5db) },
+    { MP_ROM_QSTR(MP_QSTR_ATTN_6DB),            MP_ROM_INT(ADC_ATTEN_6db) },
+    { MP_ROM_QSTR(MP_QSTR_ATTN_11DB),           MP_ROM_INT(ADC_ATTEN_11db) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(adc_locals_dict, adc_locals_dict_table);
@@ -331,12 +331,12 @@ STATIC mp_obj_t adc_channel_call(mp_obj_t self_in, mp_uint_t n_args, mp_uint_t n
     return adc_channel_value (self_in);
 }
 
-STATIC const mp_map_elem_t adc_channel_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                (mp_obj_t)&adc_channel_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_deinit),              (mp_obj_t)&adc_channel_deinit_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_value),               (mp_obj_t)&adc_channel_value_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_voltage),             (mp_obj_t)&adc_channel_voltage_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_value_to_voltage),    (mp_obj_t)&adc_channel_value_to_voltage_obj },
+STATIC const mp_rom_map_elem_t adc_channel_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_init),                MP_ROM_PTR(&adc_channel_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_deinit),              MP_ROM_PTR(&adc_channel_deinit_obj) },
+    { MP_ROM_QSTR(MP_QSTR_value),               MP_ROM_PTR(&adc_channel_value_obj) },
+    { MP_ROM_QSTR(MP_QSTR_voltage),             MP_ROM_PTR(&adc_channel_voltage_obj) },
+    { MP_ROM_QSTR(MP_QSTR_value_to_voltage),    MP_ROM_PTR(&adc_channel_value_to_voltage_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(adc_channel_locals_dict, adc_channel_locals_dict_table);

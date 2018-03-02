@@ -1,5 +1,5 @@
 /*
- * This file is part of the Micro Python project, http://micropython.org/
+ * This file is part of the MicroPython project, http://micropython.org/
  *
  * Taken from ST Cube library and modified.  See below for original header.
  *
@@ -87,8 +87,7 @@
   * @{
   */
 
-#include "mpconfigboard.h"
-#include STM32_HAL_H
+#include "py/mphal.h"
 
 void __fatal_error(const char *msg);
 
@@ -113,6 +112,14 @@ void __fatal_error(const char *msg);
 #define CONFIG_RCC_CR_1ST (RCC_CR_HSION)
 #define CONFIG_RCC_CR_2ND (RCC_CR_HSEON || RCC_CR_CSSON || RCC_CR_PLLON)
 #define CONFIG_RCC_PLLCFGR (0x24003010)
+
+#if defined(MCU_SERIES_F4)
+const uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
+const uint8_t APBPrescTable[8] = {0, 0, 0, 0, 1, 2, 3, 4};
+#elif defined(MCU_SERIES_F7)
+const uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
+const uint8_t APBPrescTable[8] = {0, 0, 0, 0, 1, 2, 3, 4};
+#endif
 
 #elif defined(MCU_SERIES_L4)
 
@@ -324,12 +331,8 @@ void SystemClock_Config(void)
      regarding system frequency refer to product datasheet.  */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
     #elif defined(MCU_SERIES_L4)
-    /* Enable the LSE Oscillator */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSE;
-    RCC_OscInitStruct.LSEState = RCC_LSE_ON;
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-        __fatal_error("HAL_RCC_OscConfig");
-    }
+    // Configure LSE Drive Capability
+    __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_LOW);
     #endif
 
     /* Enable HSE Oscillator and activate PLL with HSE as source */
@@ -457,6 +460,8 @@ void SystemClock_Config(void)
     PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_PLLSAI1;
     PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
     PeriphClkInitStruct.RngClockSelection = RCC_RNGCLKSOURCE_PLLSAI1;
+    PeriphClkInitStruct.PLLSAI1.PLLSAI1Source = RCC_PLLSOURCE_MSI;
+    PeriphClkInitStruct.PLLSAI1.PLLSAI1M = 1;
     PeriphClkInitStruct.PLLSAI1.PLLSAI1N = 24;
     PeriphClkInitStruct.PLLSAI1.PLLSAI1P = RCC_PLLP_DIV7;
     PeriphClkInitStruct.PLLSAI1.PLLSAI1Q = RCC_PLLQ_DIV2;

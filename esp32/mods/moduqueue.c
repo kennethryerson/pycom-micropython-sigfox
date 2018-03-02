@@ -58,9 +58,9 @@ STATIC mp_obj_t mod_uqueue_queue(mp_uint_t n_args, const mp_obj_t *pos_args, mp_
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(mod_uqueue_queue_obj, 0, mod_uqueue_queue);
 
-STATIC const mp_map_elem_t mp_module_uqueue_globals_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___name__),            MP_OBJ_NEW_QSTR(MP_QSTR_queue) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_Queue),               (mp_obj_t)&mod_uqueue_queue_obj },
+STATIC const mp_rom_map_elem_t mp_module_uqueue_globals_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__),            MP_ROM_QSTR(MP_QSTR_queue) },
+    { MP_ROM_QSTR(MP_QSTR_Queue),               MP_ROM_PTR(&mod_uqueue_queue_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mp_module_uqueue_globals, mp_module_uqueue_globals_table);
@@ -140,16 +140,16 @@ STATIC mp_obj_t mp_queue_full(mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_queue_full_obj, mp_queue_full);
 
-STATIC const mp_map_elem_t queue_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t queue_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR___del__),                 (mp_obj_t)&mp_queue_delete_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_put),                     (mp_obj_t)&mp_queue_put_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_get),                     (mp_obj_t)&mp_queue_get_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_empty),                   (mp_obj_t)&mp_queue_empty_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_full),                    (mp_obj_t)&mp_queue_full_obj },
+    { MP_ROM_QSTR(MP_QSTR___del__),                 MP_ROM_PTR(&mp_queue_delete_obj) },
+    { MP_ROM_QSTR(MP_QSTR_put),                     MP_ROM_PTR(&mp_queue_put_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get),                     MP_ROM_PTR(&mp_queue_get_obj) },
+    { MP_ROM_QSTR(MP_QSTR_empty),                   MP_ROM_PTR(&mp_queue_empty_obj) },
+    { MP_ROM_QSTR(MP_QSTR_full),                    MP_ROM_PTR(&mp_queue_full_obj) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_Full),                    (mp_obj_t)&mp_type_OSError },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_Empty),                   (mp_obj_t)&mp_type_OSError },
+    { MP_ROM_QSTR(MP_QSTR_Full),                    MP_ROM_PTR(&mp_type_OSError) },
+    { MP_ROM_QSTR(MP_QSTR_Empty),                   MP_ROM_PTR(&mp_type_OSError) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(queue_locals_dict, queue_locals_dict_table);

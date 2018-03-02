@@ -95,11 +95,11 @@ STATIC IRAM_ATTR mp_obj_t sleep_us(mp_obj_t delay) {
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(sleep_us_fun_obj, sleep_us);
 STATIC MP_DEFINE_CONST_STATICMETHOD_OBJ(sleep_us_obj, &sleep_us_fun_obj);
 
-STATIC const mp_map_elem_t mach_timer_globals_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___name__),            MP_OBJ_NEW_QSTR(MP_QSTR_timer)},
-    { MP_OBJ_NEW_QSTR(MP_QSTR_Alarm),               (mp_obj_t)&mach_timer_alarm_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_Chrono),              (mp_obj_t)&mach_timer_chrono_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_sleep_us),            (mp_obj_t)&sleep_us_obj },
+STATIC const mp_rom_map_elem_t mach_timer_globals_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__),            MP_ROM_QSTR(MP_QSTR_timer)},
+    { MP_ROM_QSTR(MP_QSTR_Alarm),               MP_ROM_PTR(&mach_timer_alarm_type) },
+    { MP_ROM_QSTR(MP_QSTR_Chrono),              MP_ROM_PTR(&mach_timer_chrono_type) },
+    { MP_ROM_QSTR(MP_QSTR_sleep_us),            MP_ROM_PTR(&sleep_us_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mach_timer_globals, mach_timer_globals_table);

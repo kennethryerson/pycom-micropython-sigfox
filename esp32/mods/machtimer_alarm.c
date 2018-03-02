@@ -308,11 +308,11 @@ STATIC mp_obj_t alarm_delete(mp_obj_t self_in) {
 MP_DEFINE_CONST_FUN_OBJ_1(alarm_delete_obj, alarm_delete);
 
 
-STATIC const mp_map_elem_t mach_timer_alarm_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___name__),            MP_OBJ_NEW_QSTR(MP_QSTR_alarm) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR___del__),             (mp_obj_t) &alarm_delete_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_callback),            (mp_obj_t) &alarm_callback_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_cancel),              (mp_obj_t) &alarm_delete_obj },
+STATIC const mp_rom_map_elem_t mach_timer_alarm_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__),            MP_ROM_QSTR(MP_QSTR_alarm) },
+    { MP_ROM_QSTR(MP_QSTR___del__),             MP_ROM_PTR(&alarm_delete_obj) },
+    { MP_ROM_QSTR(MP_QSTR_callback),            MP_ROM_PTR(&alarm_callback_obj) },
+    { MP_ROM_QSTR(MP_QSTR_cancel),              MP_ROM_PTR(&alarm_delete_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mach_timer_alarm_dict, mach_timer_alarm_dict_table);

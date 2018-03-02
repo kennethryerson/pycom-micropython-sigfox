@@ -9,7 +9,7 @@
 *.dis
 *.exe
 
-# Packages 
+# Packages
 ############
 
 # Logs and Databases
@@ -42,3 +42,7 @@ user.props
 .project
 .pydevproject
 .settings
+
+# Generated rst files
+######################
+genrst/

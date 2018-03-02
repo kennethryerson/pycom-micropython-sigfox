@@ -1,5 +1,5 @@
 /*
- * This file is part of the Micro Python project, http://micropython.org/
+ * This file is part of the MicroPython project, http://micropython.org/
  *
  * The MIT License (MIT)
  *
@@ -28,9 +28,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include STM32_HAL_H
-
-#include "py/nlr.h"
 #include "py/runtime.h"
 #include "timer.h"
 #include "dac.h"
@@ -122,12 +119,12 @@ STATIC uint32_t TIMx_Config(mp_obj_t timer) {
         return DAC_TRIGGER_T8_TRGO;
     #endif
     } else {
-        nlr_raise(mp_obj_new_exception_msg(&mp_type_ValueError, "Timer does not support DAC triggering"));
+        mp_raise_ValueError("Timer does not support DAC triggering");
     }
 }
 
 /******************************************************************************/
-// Micro Python bindings
+// MicroPython bindings
 
 typedef enum {
     DAC_STATE_RESET,
@@ -145,7 +142,7 @@ typedef struct _pyb_dac_obj_t {
     uint8_t state;
 } pyb_dac_obj_t;
 
-STATIC mp_obj_t pyb_dac_init_helper(pyb_dac_obj_t *self, mp_uint_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+STATIC mp_obj_t pyb_dac_init_helper(pyb_dac_obj_t *self, size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     static const mp_arg_t allowed_args[] = {
         { MP_QSTR_bits, MP_ARG_INT, {.u_int = 8} },
     };
@@ -189,7 +186,7 @@ STATIC mp_obj_t pyb_dac_init_helper(pyb_dac_obj_t *self, mp_uint_t n_args, const
     if (args[0].u_int == 8 || args[0].u_int == 12) {
         self->bits = args[0].u_int;
     } else {
-        nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, "unsupported bits"));
+        mp_raise_ValueError("unsupported bits");
     }
 
     // reset state of DAC
@@ -206,7 +203,7 @@ STATIC mp_obj_t pyb_dac_init_helper(pyb_dac_obj_t *self, mp_uint_t n_args, const
 ///
 /// `port` can be a pin object, or an integer (1 or 2).
 /// DAC(1) is on pin X5 and DAC(2) is on pin X6.
-STATIC mp_obj_t pyb_dac_make_new(const mp_obj_type_t *type, mp_uint_t n_args, mp_uint_t n_kw, const mp_obj_t *args) {
+STATIC mp_obj_t pyb_dac_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
     // check arguments
     mp_arg_check_num(n_args, n_kw, 1, MP_OBJ_FUN_ARGS_MAX, true);
 
@@ -221,7 +218,7 @@ STATIC mp_obj_t pyb_dac_make_new(const mp_obj_type_t *type, mp_uint_t n_args, mp
         } else if (pin == &pin_A5) {
             dac_id = 2;
         } else {
-            nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, "pin %q does not have DAC capabilities", pin->name));
+            nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, "Pin(%q) doesn't have DAC capabilities", pin->name));
         }
     }
 
@@ -237,7 +234,7 @@ STATIC mp_obj_t pyb_dac_make_new(const mp_obj_type_t *type, mp_uint_t n_args, mp
         dac->dac_channel = DAC_CHANNEL_2;
         dac->tx_dma_descr = &dma_DAC_2_TX;
     } else {
-        nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, "DAC %d does not exist", dac_id));
+        nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, "DAC(%d) doesn't exist", dac_id));
     }
 
     // configure the peripheral
@@ -249,7 +246,7 @@ STATIC mp_obj_t pyb_dac_make_new(const mp_obj_type_t *type, mp_uint_t n_args, mp
     return dac;
 }
 
-STATIC mp_obj_t pyb_dac_init(mp_uint_t n_args, const mp_obj_t *args, mp_map_t *kw_args) {
+STATIC mp_obj_t pyb_dac_init(size_t n_args, const mp_obj_t *args, mp_map_t *kw_args) {
     return pyb_dac_init_helper(args[0], n_args - 1, args + 1, kw_args);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(pyb_dac_init_obj, 1, pyb_dac_init);
@@ -372,7 +369,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_2(pyb_dac_write_obj, pyb_dac_write);
 // and we can reuse the same timer for both DACs (and maybe also ADC) without
 // setting the freq twice.
 // Can still do 1-liner: dac.write_trig(buf, trig=Timer(6, freq=100), loop=True)
-mp_obj_t pyb_dac_write_timed(mp_uint_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t pyb_dac_write_timed(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     static const mp_arg_t allowed_args[] = {
         { MP_QSTR_data, MP_ARG_REQUIRED | MP_ARG_OBJ, {.u_obj = MP_OBJ_NULL} },
         { MP_QSTR_freq, MP_ARG_REQUIRED | MP_ARG_OBJ, {.u_obj = MP_OBJ_NULL} },
@@ -481,20 +478,20 @@ mp_obj_t pyb_dac_write_timed(mp_uint_t n_args, const mp_obj_t *pos_args, mp_map_
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(pyb_dac_write_timed_obj, 1, pyb_dac_write_timed);
 #endif
 
-STATIC const mp_map_elem_t pyb_dac_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t pyb_dac_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init), (mp_obj_t)&pyb_dac_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_deinit), (mp_obj_t)&pyb_dac_deinit_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_write), (mp_obj_t)&pyb_dac_write_obj },
+    { MP_ROM_QSTR(MP_QSTR_init), MP_ROM_PTR(&pyb_dac_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_deinit), MP_ROM_PTR(&pyb_dac_deinit_obj) },
+    { MP_ROM_QSTR(MP_QSTR_write), MP_ROM_PTR(&pyb_dac_write_obj) },
     #if defined(TIM6)
-    { MP_OBJ_NEW_QSTR(MP_QSTR_noise), (mp_obj_t)&pyb_dac_noise_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_triangle), (mp_obj_t)&pyb_dac_triangle_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_write_timed), (mp_obj_t)&pyb_dac_write_timed_obj },
+    { MP_ROM_QSTR(MP_QSTR_noise), MP_ROM_PTR(&pyb_dac_noise_obj) },
+    { MP_ROM_QSTR(MP_QSTR_triangle), MP_ROM_PTR(&pyb_dac_triangle_obj) },
+    { MP_ROM_QSTR(MP_QSTR_write_timed), MP_ROM_PTR(&pyb_dac_write_timed_obj) },
     #endif
 
     // class constants
-    { MP_OBJ_NEW_QSTR(MP_QSTR_NORMAL),      MP_OBJ_NEW_SMALL_INT(DMA_NORMAL) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CIRCULAR),    MP_OBJ_NEW_SMALL_INT(DMA_CIRCULAR) },
+    { MP_ROM_QSTR(MP_QSTR_NORMAL), MP_ROM_INT(DMA_NORMAL) },
+    { MP_ROM_QSTR(MP_QSTR_CIRCULAR), MP_ROM_INT(DMA_CIRCULAR) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(pyb_dac_locals_dict, pyb_dac_locals_dict_table);
@@ -503,7 +500,7 @@ const mp_obj_type_t pyb_dac_type = {
     { &mp_type_type },
     .name = MP_QSTR_DAC,
     .make_new = pyb_dac_make_new,
-    .locals_dict = (mp_obj_t)&pyb_dac_locals_dict,
+    .locals_dict = (mp_obj_dict_t*)&pyb_dac_locals_dict,
 };
 
 #endif // MICROPY_HW_ENABLE_DAC

@@ -30,6 +30,10 @@
 #include "py/compile.h"
 #include "py/gc.h"
 #include "py/mphal.h"
+#include "lib/oofatfs/ff.h"
+#include "lib/oofatfs/diskio.h"
+#include "extmod/vfs.h"
+#include "extmod/vfs_fat.h"
 #include "lib/utils/pyexec.h"
 #include "readline.h"
 #include "esp32_mphal.h"
@@ -37,6 +41,7 @@
 #include "machpin.h"
 #include "mpexception.h"
 #include "moduos.h"
+#include "pybflash.h"
 #include "mperror.h"
 #include "mpirq.h"
 #include "serverstask.h"
@@ -67,8 +72,6 @@
 #include "machtimer_alarm.h"
 #include "mptask.h"
 
-#include "ff.h"
-#include "diskio.h"
 #include "sflash_diskio.h"
 
 #include "freertos/FreeRTOS.h"
@@ -108,7 +111,7 @@ extern TaskHandle_t svTaskHandle;
 /******************************************************************************
  DECLARE PRIVATE DATA
  ******************************************************************************/
-static FATFS sflash_fatfs;
+static fs_user_mount_t sflash_vfs_fat;
 static uint8_t *gc_pool_upy;
 
 static char fresh_main_py[] = "# main.py -- put your code here!\r\n";
@@ -191,11 +194,9 @@ soft_reset:
 
     // execute all basic initializations
     pin_init0();    // always before the rest of the peripherals
-    mpexception_init0();
 #if MICROPY_PY_THREAD
     mp_irq_init0();
 #endif
-    moduos_init0();
     uart_init0();
     mperror_init0();
     rng_init0();
@@ -338,11 +339,17 @@ STATIC void mptask_init_sflash_filesystem (void) {
     FILINFO fno;
 
     // Initialise the local flash filesystem.
+    // init the vfs object
+    fs_user_mount_t *vfs_fat = &sflash_vfs_fat;
+    vfs_fat->flags = 0;
+    pyb_flash_init_vfs(vfs_fat);
+
     // Create it if needed, and mount in on /flash.
-    FRESULT res = f_mount(&sflash_fatfs, "/flash", 1);
+    FRESULT res = f_mount(&vfs_fat->fatfs);
     if (res == FR_NO_FILESYSTEM) {
         // no filesystem, so create a fresh one
-        res = f_mkfs("/flash", FM_SFD | FM_FAT, 0, NULL, 0);
+        uint8_t working_buf[_MAX_SS];
+        res = f_mkfs(&vfs_fat->fatfs, FM_SFD | FM_FAT, 0, working_buf, sizeof(working_buf));
         if (res != FR_OK) {
             __fatal_error("failed to create /flash");
         }
@@ -351,33 +358,46 @@ STATIC void mptask_init_sflash_filesystem (void) {
     }
     else if (res == FR_OK) {
         // mount sucessful
-        if (FR_OK != f_stat("/flash/main.py", &fno)) {
+        if (FR_OK != f_stat(&vfs_fat->fatfs, "/main.py", &fno)) {
             // create empty main.py
             mptask_create_main_py();
         }
     } else {
+    fail:
         __fatal_error("failed to create /flash");
     }
 
+    // mount the flash device (there should be no other devices mounted at this point)
+    // we allocate this structure on the heap because vfs->next is a root pointer
+    mp_vfs_mount_t *vfs = m_new_obj_maybe(mp_vfs_mount_t);
+    if (vfs == NULL) {
+        goto fail;
+    }
+    vfs->str = "/flash";
+    vfs->len = 6;
+    vfs->obj = MP_OBJ_FROM_PTR(vfs_fat);
+    vfs->next = NULL;
+    MP_STATE_VM(vfs_mount_table) = vfs;
+
     // The current directory is used as the boot up directory.
     // It is set to the internal flash filesystem by default.
-    f_chdrive("/flash");
+    MP_STATE_PORT(vfs_cur) = vfs;
 
     // create /flash/sys, /flash/lib and /flash/cert if they don't exist
-    if (FR_OK != f_chdir ("/flash/sys")) {
-        f_mkdir("/flash/sys");
+    if (FR_OK != f_chdir(&vfs_fat->fatfs, "/sys")) {
+        f_mkdir(&vfs_fat->fatfs, "/sys");
     }
-    if (FR_OK != f_chdir ("/flash/lib")) {
-        f_mkdir("/flash/lib");
+    if (FR_OK != f_chdir(&vfs_fat->fatfs, "/lib")) {
+        f_mkdir(&vfs_fat->fatfs, "/lib");
     }
-    if (FR_OK != f_chdir ("/flash/cert")) {
-        f_mkdir("/flash/cert");
+    if (FR_OK != f_chdir(&vfs_fat->fatfs, "/cert")) {
+        f_mkdir(&vfs_fat->fatfs, "/cert");
     }
 
-    f_chdir ("/flash");
+    f_chdir(&vfs_fat->fatfs, "/");
 
     // make sure we have a /flash/boot.py. Create it if needed.
-    res = f_stat("/flash/boot.py", &fno);
+    res = f_stat(&vfs_fat->fatfs, "/boot.py", &fno);
     if (res == FR_OK) {
         if (fno.fattrib & AM_DIR) {
             // exists as a directory
@@ -389,7 +409,7 @@ STATIC void mptask_init_sflash_filesystem (void) {
     } else {
         // doesn't exist, create fresh file
         FIL fp;
-        f_open(&fp, "/flash/boot.py", FA_WRITE | FA_CREATE_ALWAYS);
+        f_open(&vfs_fat->fatfs, &fp, "/boot.py", FA_WRITE | FA_CREATE_ALWAYS);
         UINT n;
         f_write(&fp, fresh_boot_py, sizeof(fresh_boot_py) - 1 /* don't count null terminator */, &n);
         // TODO check we could write n bytes
@@ -440,7 +460,7 @@ STATIC void mptask_enable_wifi_ap (void) {
 STATIC void mptask_create_main_py (void) {
     // create empty main.py
     FIL fp;
-    f_open(&fp, "/flash/main.py", FA_WRITE | FA_CREATE_ALWAYS);
+    f_open(&sflash_vfs_fat.fatfs, &fp, "/main.py", FA_WRITE | FA_CREATE_ALWAYS);
     UINT n;
     f_write(&fp, fresh_main_py, sizeof(fresh_main_py) - 1 /* don't count null terminator */, &n);
     f_close(&fp);

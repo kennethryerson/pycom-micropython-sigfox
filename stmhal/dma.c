@@ -1,5 +1,5 @@
 /*
- * This file is part of the Micro Python project, http://micropython.org/
+ * This file is part of the MicroPython project, http://micropython.org/
  *
  * The MIT License (MIT)
  *
@@ -27,10 +27,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
-#include STM32_HAL_H
 
-#include "dma.h"
 #include "py/obj.h"
+#include "dma.h"
 #include "irq.h"
 
 typedef enum {
@@ -162,11 +161,17 @@ static const DMA_InitTypeDef dma_init_struct_dac = {
 // DMA1 streams
 const dma_descr_t dma_I2C_1_RX = { DMA1_Stream0, DMA_CHANNEL_1, DMA_PERIPH_TO_MEMORY, dma_id_0,   &dma_init_struct_spi_i2c };
 const dma_descr_t dma_SPI_3_RX = { DMA1_Stream2, DMA_CHANNEL_0, DMA_PERIPH_TO_MEMORY, dma_id_2,   &dma_init_struct_spi_i2c };
+#if defined(MCU_SERIES_F7)
+const dma_descr_t dma_I2C_4_RX = { DMA1_Stream2, DMA_CHANNEL_2, DMA_PERIPH_TO_MEMORY, dma_id_2,   &dma_init_struct_spi_i2c };
+#endif
 const dma_descr_t dma_I2C_3_RX = { DMA1_Stream2, DMA_CHANNEL_3, DMA_PERIPH_TO_MEMORY, dma_id_2,   &dma_init_struct_spi_i2c };
 const dma_descr_t dma_I2C_2_RX = { DMA1_Stream2, DMA_CHANNEL_7, DMA_PERIPH_TO_MEMORY, dma_id_2,   &dma_init_struct_spi_i2c };
 const dma_descr_t dma_SPI_2_RX = { DMA1_Stream3, DMA_CHANNEL_0, DMA_PERIPH_TO_MEMORY, dma_id_3,   &dma_init_struct_spi_i2c };
 const dma_descr_t dma_SPI_2_TX = { DMA1_Stream4, DMA_CHANNEL_0, DMA_MEMORY_TO_PERIPH, dma_id_4,   &dma_init_struct_spi_i2c };
 const dma_descr_t dma_I2C_3_TX = { DMA1_Stream4, DMA_CHANNEL_3, DMA_MEMORY_TO_PERIPH, dma_id_4,   &dma_init_struct_spi_i2c };
+#if defined(MCU_SERIES_F7)
+const dma_descr_t dma_I2C_4_TX = { DMA1_Stream5, DMA_CHANNEL_2, DMA_MEMORY_TO_PERIPH, dma_id_5,   &dma_init_struct_spi_i2c };
+#endif
 #if defined(MICROPY_HW_ENABLE_DAC) && MICROPY_HW_ENABLE_DAC
 const dma_descr_t dma_DAC_1_TX = { DMA1_Stream5, DMA_CHANNEL_7, DMA_MEMORY_TO_PERIPH, dma_id_5,   &dma_init_struct_dac };
 const dma_descr_t dma_DAC_2_TX = { DMA1_Stream6, DMA_CHANNEL_7, DMA_MEMORY_TO_PERIPH, dma_id_6,   &dma_init_struct_dac };
@@ -180,6 +185,9 @@ const dma_descr_t dma_I2C_1_TX = { DMA1_Stream6, DMA_CHANNEL_1, DMA_MEMORY_TO_PE
 */
 
 // DMA2 streams
+#if defined(MCU_SERIES_F7) && defined(SDMMC2) && MICROPY_HW_HAS_SDCARD
+const dma_descr_t dma_SDMMC_2_RX= { DMA2_Stream0, DMA_CHANNEL_11, DMA_PERIPH_TO_MEMORY, dma_id_8,  &dma_init_struct_sdio };
+#endif
 const dma_descr_t dma_SPI_1_RX = { DMA2_Stream2, DMA_CHANNEL_3, DMA_PERIPH_TO_MEMORY, dma_id_10,  &dma_init_struct_spi_i2c };
 const dma_descr_t dma_SPI_5_RX = { DMA2_Stream3, DMA_CHANNEL_2, DMA_PERIPH_TO_MEMORY, dma_id_11,  &dma_init_struct_spi_i2c };
 #if defined(MICROPY_HW_HAS_SDCARD) && MICROPY_HW_HAS_SDCARD
@@ -190,6 +198,9 @@ const dma_descr_t dma_SPI_5_TX = { DMA2_Stream4, DMA_CHANNEL_2, DMA_MEMORY_TO_PE
 const dma_descr_t dma_SPI_4_TX = { DMA2_Stream4, DMA_CHANNEL_5, DMA_MEMORY_TO_PERIPH, dma_id_12,  &dma_init_struct_spi_i2c };
 const dma_descr_t dma_SPI_6_TX = { DMA2_Stream5, DMA_CHANNEL_1, DMA_MEMORY_TO_PERIPH, dma_id_13,  &dma_init_struct_spi_i2c };
 const dma_descr_t dma_SPI_1_TX = { DMA2_Stream5, DMA_CHANNEL_3, DMA_MEMORY_TO_PERIPH, dma_id_13,  &dma_init_struct_spi_i2c };
+#if defined(MCU_SERIES_F7) && defined(SDMMC2) && MICROPY_HW_HAS_SDCARD
+const dma_descr_t dma_SDMMC_2_TX= { DMA2_Stream5, DMA_CHANNEL_11, DMA_MEMORY_TO_PERIPH, dma_id_13,  &dma_init_struct_sdio };
+#endif
 const dma_descr_t dma_SPI_6_RX = { DMA2_Stream6, DMA_CHANNEL_1, DMA_PERIPH_TO_MEMORY, dma_id_14,  &dma_init_struct_spi_i2c };
 #if defined(MICROPY_HW_HAS_SDCARD) && MICROPY_HW_HAS_SDCARD
 const dma_descr_t dma_SDIO_0_TX= { DMA2_Stream6, DMA_CHANNEL_4, DMA_MEMORY_TO_PERIPH, dma_id_14,  &dma_init_struct_sdio };
@@ -362,7 +373,7 @@ static void dma_enable_clock(dma_id_t dma_id) {
 
     if (dma_id < NSTREAMS_PER_CONTROLLER) {
         if (((old_enable_mask & DMA1_ENABLE_MASK) == 0) && !DMA1_IS_CLK_ENABLED()) {
-            __DMA1_CLK_ENABLE();
+            __HAL_RCC_DMA1_CLK_ENABLE();
 
             // We just turned on the clock. This means that anything stored
             // in dma_last_channel (for DMA1) needs to be invalidated.
@@ -373,7 +384,7 @@ static void dma_enable_clock(dma_id_t dma_id) {
         }
     } else {
         if (((old_enable_mask & DMA2_ENABLE_MASK) == 0) && !DMA2_IS_CLK_ENABLED()) {
-            __DMA2_CLK_ENABLE();
+            __HAL_RCC_DMA2_CLK_ENABLE();
 
             // We just turned on the clock. This means that anything stored
             // in dma_last_channel (for DMA1) needs to be invalidated.
@@ -430,11 +441,18 @@ void dma_init(DMA_HandleTypeDef *dma, const dma_descr_t *dma_descr, void *data){
             dma_last_sub_instance[dma_id] = sub_inst;
 
             // reset and configure DMA peripheral
-            if (HAL_DMA_GetState(dma) != HAL_DMA_STATE_RESET) {
-                HAL_DMA_DeInit(dma);
-            }
+            // (dma->State is set to HAL_DMA_STATE_RESET by memset above)
+            HAL_DMA_DeInit(dma);
             HAL_DMA_Init(dma);
             HAL_NVIC_SetPriority(dma_irqn[dma_id], IRQ_PRI_DMA, IRQ_SUBPRI_DMA);
+        } else {
+            // only necessary initialization
+            dma->State = HAL_DMA_STATE_READY;
+#if defined(MCU_SERIES_F4) || defined(MCU_SERIES_F7)
+            // calculate DMA base address and bitshift to be used in IRQ handler
+            extern uint32_t DMA_CalcBaseAndBitshift(DMA_HandleTypeDef *hdma);
+            DMA_CalcBaseAndBitshift(dma);
+#endif
         }
 
         HAL_NVIC_EnableIRQ(dma_irqn[dma_id]);
@@ -476,9 +494,9 @@ void dma_idle_handler(int tick) {
                 // Now we'll really disable the clock.
                 dma_idle.counter[controller] = 0;
                 if (controller == 0) {
-                    __DMA1_CLK_DISABLE();
+                    __HAL_RCC_DMA1_CLK_DISABLE();
                 } else {
-                    __DMA2_CLK_DISABLE();
+                    __HAL_RCC_DMA2_CLK_DISABLE();
                 }
             } else {
                 // Something is still active, but the counter never got

@@ -26,7 +26,9 @@
 #include "modnetwork.h"
 #include "modusocket.h"
 #include "modussl.h"
-#include "ff.h"
+#include "lib/oofatfs/ff.h"
+#include "extmod/vfs.h"
+#include "extmod/vfs_fat.h"
 
 /******************************************************************************
  DEFINE CONSTANTS
@@ -186,7 +188,16 @@ static char *mod_ssl_read_file (const char *file_path, vstr_t *vstr) {
     mp_uint_t totalsize = 0;
 
     FIL fp;
-    FRESULT res = f_open(&fp, file_path, FA_READ);
+    mp_vfs_mount_t *vfs = mp_vfs_lookup_path(file_path, &file_path);
+    if (vfs == MP_VFS_NONE || vfs == MP_VFS_ROOT) {
+        return NULL;
+    }
+    // here we assume that the mounted device is FATFS
+    FATFS *fs = &((fs_user_mount_t*)MP_OBJ_TO_PTR(vfs->obj))->fatfs;
+    if (fs == NULL) {
+        return NULL;
+    }
+    FRESULT res = f_open(fs, &fp, file_path, FA_READ);
     if (res != FR_OK) {
         return NULL;
     }
@@ -272,22 +283,22 @@ arg_error:
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(mod_ssl_wrap_socket_obj, 0, mod_ssl_wrap_socket);
 
-STATIC const mp_map_elem_t mp_module_ussl_globals_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___name__),            MP_OBJ_NEW_QSTR(MP_QSTR_ussl) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_wrap_socket),         (mp_obj_t)&mod_ssl_wrap_socket_obj },
+STATIC const mp_rom_map_elem_t mp_module_ussl_globals_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__),            MP_ROM_QSTR(MP_QSTR_ussl) },
+    { MP_ROM_QSTR(MP_QSTR_wrap_socket),         MP_ROM_PTR(&mod_ssl_wrap_socket_obj) },
 
     // class exceptions
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SSLError),            (mp_obj_t)&mp_type_OSError },
+    { MP_ROM_QSTR(MP_QSTR_SSLError),            MP_ROM_PTR(&mp_type_OSError) },
 
     // class constants
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CERT_NONE),           MP_OBJ_NEW_SMALL_INT(MBEDTLS_SSL_VERIFY_NONE) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CERT_OPTIONAL),       MP_OBJ_NEW_SMALL_INT(MBEDTLS_SSL_VERIFY_OPTIONAL) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CERT_REQUIRED),       MP_OBJ_NEW_SMALL_INT(MBEDTLS_SSL_VERIFY_REQUIRED) },
+    { MP_ROM_QSTR(MP_QSTR_CERT_NONE),           MP_ROM_INT(MBEDTLS_SSL_VERIFY_NONE) },
+    { MP_ROM_QSTR(MP_QSTR_CERT_OPTIONAL),       MP_ROM_INT(MBEDTLS_SSL_VERIFY_OPTIONAL) },
+    { MP_ROM_QSTR(MP_QSTR_CERT_REQUIRED),       MP_ROM_INT(MBEDTLS_SSL_VERIFY_REQUIRED) },
 
-    // { MP_OBJ_NEW_QSTR(MP_QSTR_PROTOCOL_SSLv3),      MP_OBJ_NEW_SMALL_INT(SL_SO_SEC_METHOD_SSLV3) },
-    // { MP_OBJ_NEW_QSTR(MP_QSTR_PROTOCOL_TLSv1),      MP_OBJ_NEW_SMALL_INT(SL_SO_SEC_METHOD_TLSV1) },
-    // { MP_OBJ_NEW_QSTR(MP_QSTR_PROTOCOL_TLSv1_1),    MP_OBJ_NEW_SMALL_INT(SL_SO_SEC_METHOD_TLSV1_1) },
-    // { MP_OBJ_NEW_QSTR(MP_QSTR_PROTOCOL_TLSv1_2),    MP_OBJ_NEW_SMALL_INT(SL_SO_SEC_METHOD_TLSV1_2) },
+    // { MP_ROM_QSTR(MP_QSTR_PROTOCOL_SSLv3),      MP_ROM_INT(SL_SO_SEC_METHOD_SSLV3) },
+    // { MP_ROM_QSTR(MP_QSTR_PROTOCOL_TLSv1),      MP_ROM_INT(SL_SO_SEC_METHOD_TLSV1) },
+    // { MP_ROM_QSTR(MP_QSTR_PROTOCOL_TLSv1_1),    MP_ROM_INT(SL_SO_SEC_METHOD_TLSV1_1) },
+    // { MP_ROM_QSTR(MP_QSTR_PROTOCOL_TLSv1_2),    MP_ROM_INT(SL_SO_SEC_METHOD_TLSV1_2) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mp_module_ussl_globals, mp_module_ussl_globals_table);

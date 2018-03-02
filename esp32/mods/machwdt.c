@@ -134,9 +134,9 @@ STATIC mp_obj_t mach_wdt_feed (mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mach_wdt_feed_obj, mach_wdt_feed);
 
-STATIC const mp_map_elem_t mach_wdt_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                (mp_obj_t)&mach_wdt_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_feed),                (mp_obj_t)&mach_wdt_feed_obj },
+STATIC const mp_rom_map_elem_t mach_wdt_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_init),                MP_ROM_PTR(&mach_wdt_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_feed),                MP_ROM_PTR(&mach_wdt_feed_obj) },
 };
 STATIC MP_DEFINE_CONST_DICT(mach_wdt_locals_dict, mach_wdt_locals_dict_table);
 

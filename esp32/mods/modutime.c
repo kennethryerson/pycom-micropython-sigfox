@@ -203,22 +203,22 @@ STATIC mp_obj_t time_timezone(mp_uint_t n_args, const mp_obj_t *args) {
 }
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(time_timezone_obj, 0, 1, time_timezone);
 
-STATIC const mp_map_elem_t time_module_globals_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_utime) },
+STATIC const mp_rom_map_elem_t time_module_globals_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_utime) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_localtime),           (mp_obj_t)&time_localtime_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_gmtime),              (mp_obj_t)&time_gmtime_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_mktime),              (mp_obj_t)&time_mktime_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_sleep),               (mp_obj_t)&time_sleep_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_sleep_ms),            (mp_obj_t)&time_sleep_ms_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_sleep_us),            (mp_obj_t)&time_sleep_us_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ticks_ms),            (mp_obj_t)&time_ticks_ms_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ticks_us),            (mp_obj_t)&time_ticks_us_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ticks_cpu),           (mp_obj_t)&time_ticks_cpu_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ticks_add),           (mp_obj_t)&time_ticks_add_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ticks_diff),          (mp_obj_t)&time_ticks_diff_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_time),                (mp_obj_t)&time_time_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_timezone),            (mp_obj_t)&time_timezone_obj },
+    { MP_ROM_QSTR(MP_QSTR_localtime),           MP_ROM_PTR(&time_localtime_obj) },
+    { MP_ROM_QSTR(MP_QSTR_gmtime),              MP_ROM_PTR(&time_gmtime_obj) },
+    { MP_ROM_QSTR(MP_QSTR_mktime),              MP_ROM_PTR(&time_mktime_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sleep),               MP_ROM_PTR(&time_sleep_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sleep_ms),            MP_ROM_PTR(&time_sleep_ms_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sleep_us),            MP_ROM_PTR(&time_sleep_us_obj) },
+    { MP_ROM_QSTR(MP_QSTR_ticks_ms),            MP_ROM_PTR(&time_ticks_ms_obj) },
+    { MP_ROM_QSTR(MP_QSTR_ticks_us),            MP_ROM_PTR(&time_ticks_us_obj) },
+    { MP_ROM_QSTR(MP_QSTR_ticks_cpu),           MP_ROM_PTR(&time_ticks_cpu_obj) },
+    { MP_ROM_QSTR(MP_QSTR_ticks_add),           MP_ROM_PTR(&time_ticks_add_obj) },
+    { MP_ROM_QSTR(MP_QSTR_ticks_diff),          MP_ROM_PTR(&time_ticks_diff_obj) },
+    { MP_ROM_QSTR(MP_QSTR_time),                MP_ROM_PTR(&time_time_obj) },
+    { MP_ROM_QSTR(MP_QSTR_timezone),            MP_ROM_PTR(&time_timezone_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(time_module_globals, time_module_globals_table);

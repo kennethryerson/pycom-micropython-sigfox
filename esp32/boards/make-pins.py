@@ -166,11 +166,11 @@ class Pins:
 
     def print_named(self, label, named_pins):
         print('')
-        print('STATIC DRAM_ATTR mp_map_elem_t pin_{:s}_pins_locals_dict_table[] = {{'.format(label))
+        print('STATIC DRAM_ATTR mp_rom_map_elem_t pin_{:s}_pins_locals_dict_table[] = {{'.format(label))
         for named_pin in named_pins:
             pin = named_pin.pin()
             if pin.board_pin:
-                print('    {{ MP_OBJ_NEW_QSTR(MP_QSTR_{:6s}), (mp_obj_t)&pin_{:6s} }},'.format(named_pin.name(), pin.cpu_pin_name))
+                print('    {{ MP_ROM_QSTR(MP_QSTR_{:6s}), MP_ROM_PTR(&pin_{:6s}) }},'.format(named_pin.name(), pin.cpu_pin_name))
         print('};')
         print('MP_DEFINE_RAM_DICT(pin_{:s}_pins_locals_dict, pin_{:s}_pins_locals_dict_table);'.format(label, label));
 

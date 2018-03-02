@@ -30,7 +30,9 @@
 #include "esp_wifi.h"
 #include "esp_wifi_types.h"
 #include "esp_event_loop.h"
-#include "ff.h"
+#include "lib/oofatfs/ff.h"
+#include "extmod/vfs.h"
+#include "extmod/vfs_fat.h"
 #include "esp_wpa2.h"
 
 //#include "timeutils.h"
@@ -38,7 +40,6 @@
 #include "modnetwork.h"
 #include "modusocket.h"
 #include "modwlan.h"
-#include "pybioctl.h"
 //#include "pybrtc.h"
 #include "serverstask.h"
 #include "mpexception.h"
@@ -758,7 +759,7 @@ STATIC mp_obj_t wlan_scan(mp_obj_t self_in) {
             for (int i = 0; i < ap_num; i++) {
                 ap_record = &ap_record_buffer[i];
                 mp_obj_t tuple[5];
-                tuple[0] = mp_obj_new_str((const char *)ap_record->ssid, strlen((char *)ap_record->ssid), false);
+                tuple[0] = mp_obj_new_str((const char *)ap_record->ssid, strlen((char *)ap_record->ssid));
                 tuple[1] = mp_obj_new_bytes((const byte *)ap_record->bssid, sizeof(ap_record->bssid));
                 tuple[2] = mp_obj_new_int(ap_record->authmode);
                 tuple[3] = mp_obj_new_int(ap_record->primary);
@@ -996,7 +997,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(wlan_mode_obj, 1, 2, wlan_mode);
 STATIC mp_obj_t wlan_ssid (mp_uint_t n_args, const mp_obj_t *args) {
     wlan_obj_t *self = args[0];
     if (n_args == 1) {
-        return mp_obj_new_str((const char *)self->ssid, strlen((const char *)self->ssid), false);
+        return mp_obj_new_str((const char *)self->ssid, strlen((const char *)self->ssid));
     } else {
         const char *ssid = mp_obj_str_get_str(args[1]);
         wlan_validate_ssid_len(strlen(ssid));
@@ -1026,7 +1027,7 @@ STATIC mp_obj_t wlan_auth (mp_uint_t n_args, const mp_obj_t *args) {
         } else {
             mp_obj_t security[2];
             security[0] = mp_obj_new_int(self->auth);
-            security[1] = mp_obj_new_str((const char *)self->key, strlen((const char *)self->key), false);
+            security[1] = mp_obj_new_str((const char *)self->key, strlen((const char *)self->key));
             return mp_obj_new_tuple(2, security);
         }
     } else {
@@ -1129,36 +1130,36 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(wlan_mac_obj, 1, 2, wlan_mac);
 //}
 //STATIC MP_DEFINE_CONST_FUN_OBJ_KW(wlan_irq_obj, 1, wlan_irq);
 
-STATIC const mp_map_elem_t wlan_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                (mp_obj_t)&wlan_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_deinit),              (mp_obj_t)&wlan_deinit_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_scan),                (mp_obj_t)&wlan_scan_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_connect),             (mp_obj_t)&wlan_connect_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_disconnect),          (mp_obj_t)&wlan_disconnect_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_isconnected),         (mp_obj_t)&wlan_isconnected_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ifconfig),            (mp_obj_t)&wlan_ifconfig_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_mode),                (mp_obj_t)&wlan_mode_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ssid),                (mp_obj_t)&wlan_ssid_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_bssid),               (mp_obj_t)&wlan_bssid_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_auth),                (mp_obj_t)&wlan_auth_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_channel),             (mp_obj_t)&wlan_channel_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_antenna),             (mp_obj_t)&wlan_antenna_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_mac),                 (mp_obj_t)&wlan_mac_obj },
-//    { MP_OBJ_NEW_QSTR(MP_QSTR_irq),                 (mp_obj_t)&wlan_irq_obj },
-    // { MP_OBJ_NEW_QSTR(MP_QSTR_connections),         (mp_obj_t)&wlan_connections_obj },
-    // { MP_OBJ_NEW_QSTR(MP_QSTR_urn),                 (mp_obj_t)&wlan_urn_obj },
+STATIC const mp_rom_map_elem_t wlan_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_init),                MP_ROM_PTR(&wlan_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_deinit),              MP_ROM_PTR(&wlan_deinit_obj) },
+    { MP_ROM_QSTR(MP_QSTR_scan),                MP_ROM_PTR(&wlan_scan_obj) },
+    { MP_ROM_QSTR(MP_QSTR_connect),             MP_ROM_PTR(&wlan_connect_obj) },
+    { MP_ROM_QSTR(MP_QSTR_disconnect),          MP_ROM_PTR(&wlan_disconnect_obj) },
+    { MP_ROM_QSTR(MP_QSTR_isconnected),         MP_ROM_PTR(&wlan_isconnected_obj) },
+    { MP_ROM_QSTR(MP_QSTR_ifconfig),            MP_ROM_PTR(&wlan_ifconfig_obj) },
+    { MP_ROM_QSTR(MP_QSTR_mode),                MP_ROM_PTR(&wlan_mode_obj) },
+    { MP_ROM_QSTR(MP_QSTR_ssid),                MP_ROM_PTR(&wlan_ssid_obj) },
+    { MP_ROM_QSTR(MP_QSTR_bssid),               MP_ROM_PTR(&wlan_bssid_obj) },
+    { MP_ROM_QSTR(MP_QSTR_auth),                MP_ROM_PTR(&wlan_auth_obj) },
+    { MP_ROM_QSTR(MP_QSTR_channel),             MP_ROM_PTR(&wlan_channel_obj) },
+    { MP_ROM_QSTR(MP_QSTR_antenna),             MP_ROM_PTR(&wlan_antenna_obj) },
+    { MP_ROM_QSTR(MP_QSTR_mac),                 MP_ROM_PTR(&wlan_mac_obj) },
+//    { MP_ROM_QSTR(MP_QSTR_irq),                 MP_ROM_PTR(&wlan_irq_obj) },
+    // { MP_ROM_QSTR(MP_QSTR_connections),         MP_ROM_PTR(&wlan_connections_obj) },
+    // { MP_ROM_QSTR(MP_QSTR_urn),                 MP_ROM_PTR(&wlan_urn_obj) },
 
     // class constants
-    { MP_OBJ_NEW_QSTR(MP_QSTR_STA),                 MP_OBJ_NEW_SMALL_INT(WIFI_MODE_STA) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_AP),                  MP_OBJ_NEW_SMALL_INT(WIFI_MODE_AP) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_STA_AP),              MP_OBJ_NEW_SMALL_INT(WIFI_MODE_APSTA) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_WEP),                 MP_OBJ_NEW_SMALL_INT(WIFI_AUTH_WEP) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_WPA),                 MP_OBJ_NEW_SMALL_INT(WIFI_AUTH_WPA_PSK) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_WPA2),                MP_OBJ_NEW_SMALL_INT(WIFI_AUTH_WPA2_PSK) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_WPA2_ENT),            MP_OBJ_NEW_SMALL_INT(WIFI_AUTH_WPA2_ENTERPRISE) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_INT_ANT),             MP_OBJ_NEW_SMALL_INT(ANTENNA_TYPE_INTERNAL) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_EXT_ANT),             MP_OBJ_NEW_SMALL_INT(ANTENNA_TYPE_EXTERNAL) },
-//    { MP_OBJ_NEW_QSTR(MP_QSTR_ANY_EVENT),           MP_OBJ_NEW_SMALL_INT(MODWLAN_WIFI_EVENT_ANY) },
+    { MP_ROM_QSTR(MP_QSTR_STA),                 MP_ROM_INT(WIFI_MODE_STA) },
+    { MP_ROM_QSTR(MP_QSTR_AP),                  MP_ROM_INT(WIFI_MODE_AP) },
+    { MP_ROM_QSTR(MP_QSTR_STA_AP),              MP_ROM_INT(WIFI_MODE_APSTA) },
+    { MP_ROM_QSTR(MP_QSTR_WEP),                 MP_ROM_INT(WIFI_AUTH_WEP) },
+    { MP_ROM_QSTR(MP_QSTR_WPA),                 MP_ROM_INT(WIFI_AUTH_WPA_PSK) },
+    { MP_ROM_QSTR(MP_QSTR_WPA2),                MP_ROM_INT(WIFI_AUTH_WPA2_PSK) },
+    { MP_ROM_QSTR(MP_QSTR_WPA2_ENT),            MP_ROM_INT(WIFI_AUTH_WPA2_ENTERPRISE) },
+    { MP_ROM_QSTR(MP_QSTR_INT_ANT),             MP_ROM_INT(ANTENNA_TYPE_INTERNAL) },
+    { MP_ROM_QSTR(MP_QSTR_EXT_ANT),             MP_ROM_INT(ANTENNA_TYPE_EXTERNAL) },
+//    { MP_ROM_QSTR(MP_QSTR_ANY_EVENT),           MP_ROM_INT(MODWLAN_WIFI_EVENT_ANY) },
 };
 STATIC MP_DEFINE_CONST_DICT(wlan_locals_dict, wlan_locals_dict_table);
 
@@ -1475,7 +1476,7 @@ static int wlan_socket_settimeout(mod_network_socket_obj_t *s, mp_int_t timeout_
 
 static int wlan_socket_ioctl (mod_network_socket_obj_t *s, mp_uint_t request, mp_uint_t arg, int *_errno) {
     mp_int_t ret;
-    if (request == MP_IOCTL_POLL) {
+    if (request == MP_STREAM_POLL) {
         mp_uint_t flags = arg;
         ret = 0;
         int32_t sd = s->sock_base.u.sd;
@@ -1487,13 +1488,13 @@ static int wlan_socket_ioctl (mod_network_socket_obj_t *s, mp_uint_t request, mp
         FD_ZERO(&xfds);
 
         // set fds if needed
-        if (flags & MP_IOCTL_POLL_RD) {
+        if (flags & MP_STREAM_POLL_RD) {
             FD_SET(sd, &rfds);
         }
-        if (flags & MP_IOCTL_POLL_WR) {
+        if (flags & MP_STREAM_POLL_WR) {
             FD_SET(sd, &wfds);
         }
-        if (flags & MP_IOCTL_POLL_HUP) {
+        if (flags & MP_STREAM_POLL_HUP) {
             FD_SET(sd, &xfds);
         }
 
@@ -1511,13 +1512,13 @@ static int wlan_socket_ioctl (mod_network_socket_obj_t *s, mp_uint_t request, mp
 
         // check return of select
         if (FD_ISSET(sd, &rfds)) {
-            ret |= MP_IOCTL_POLL_RD;
+            ret |= MP_STREAM_POLL_RD;
         }
         if (FD_ISSET(sd, &wfds)) {
-            ret |= MP_IOCTL_POLL_WR;
+            ret |= MP_STREAM_POLL_WR;
         }
         if (FD_ISSET(sd, &xfds)) {
-            ret |= MP_IOCTL_POLL_HUP;
+            ret |= MP_STREAM_POLL_HUP;
         }
     } else {
         *_errno = MP_EINVAL;
@@ -1534,7 +1535,16 @@ static char *wlan_read_file (const char *file_path, vstr_t *vstr) {
     mp_uint_t totalsize = 0;
 
     FIL fp;
-    FRESULT res = f_open(&fp, file_path, FA_READ);
+    mp_vfs_mount_t *vfs = mp_vfs_lookup_path(file_path, &file_path);
+    if (vfs == MP_VFS_NONE || vfs == MP_VFS_ROOT) {
+        return NULL;
+    }
+    // here we assume that the mounted device is FATFS
+    FATFS *fs = &((fs_user_mount_t*)MP_OBJ_TO_PTR(vfs->obj))->fatfs;
+    if (fs == NULL) {
+        return NULL;
+    }
+    FRESULT res = f_open(fs, &fp, file_path, FA_READ);
     if (res != FR_OK) {
         return NULL;
     }

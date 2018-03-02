@@ -137,7 +137,7 @@ STATIC void mach_can_print(const mp_print_t *print, mp_obj_t self_in, mp_print_k
 }
 
 STATIC mp_obj_t mach_can_init_helper(mach_can_obj_t *self, const mp_arg_val_t *args) {
-    uint32_t mode = args[0].u_int; 
+    uint32_t mode = args[0].u_int;
     // verify that the mode is correct
     if (mode != CAN_mode_normal && mode != CAN_mode_listen_only) {
         goto invalid_args;
@@ -471,31 +471,31 @@ STATIC mp_obj_t mach_can_events(mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mach_can_events_obj, mach_can_events);
 
-STATIC const mp_map_elem_t mach_can_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                (mp_obj_t)&mach_can_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_deinit),              (mp_obj_t)&mach_can_deinit_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_send),                (mp_obj_t)&mach_can_send_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_recv),                (mp_obj_t)&mach_can_recv_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_soft_filter),         (mp_obj_t)&mach_can_soft_filter_obj },
-    // { MP_OBJ_NEW_QSTR(MP_QSTR_hard_filter),         (mp_obj_t)&mach_can_hard_filter_obj },
+STATIC const mp_rom_map_elem_t mach_can_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_init),                MP_ROM_PTR(&mach_can_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_deinit),              MP_ROM_PTR(&mach_can_deinit_obj) },
+    { MP_ROM_QSTR(MP_QSTR_send),                MP_ROM_PTR(&mach_can_send_obj) },
+    { MP_ROM_QSTR(MP_QSTR_recv),                MP_ROM_PTR(&mach_can_recv_obj) },
+    { MP_ROM_QSTR(MP_QSTR_soft_filter),         MP_ROM_PTR(&mach_can_soft_filter_obj) },
+    // { MP_ROM_QSTR(MP_QSTR_hard_filter),         MP_ROM_PTR(&mach_can_hard_filter_obj) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_callback),            (mp_obj_t)&mach_can_callback_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_events),              (mp_obj_t)&mach_can_events_obj },
+    { MP_ROM_QSTR(MP_QSTR_callback),            MP_ROM_PTR(&mach_can_callback_obj) },
+    { MP_ROM_QSTR(MP_QSTR_events),              MP_ROM_PTR(&mach_can_events_obj) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_NORMAL),              MP_OBJ_NEW_SMALL_INT(CAN_mode_normal) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SILENT),              MP_OBJ_NEW_SMALL_INT(CAN_mode_listen_only) },
+    { MP_ROM_QSTR(MP_QSTR_NORMAL),              MP_ROM_INT(CAN_mode_normal) },
+    { MP_ROM_QSTR(MP_QSTR_SILENT),              MP_ROM_INT(CAN_mode_listen_only) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_FORMAT_STD),          MP_OBJ_NEW_SMALL_INT(MACH_CAN_FORMAT_STD) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_FORMAT_EXT),          MP_OBJ_NEW_SMALL_INT(MACH_CAN_FORMAT_EXT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_FORMAT_BOTH),         MP_OBJ_NEW_SMALL_INT(MACH_CAN_FORMAT_BOTH) },
+    { MP_ROM_QSTR(MP_QSTR_FORMAT_STD),          MP_ROM_INT(MACH_CAN_FORMAT_STD) },
+    { MP_ROM_QSTR(MP_QSTR_FORMAT_EXT),          MP_ROM_INT(MACH_CAN_FORMAT_EXT) },
+    { MP_ROM_QSTR(MP_QSTR_FORMAT_BOTH),         MP_ROM_INT(MACH_CAN_FORMAT_BOTH) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RX_FRAME),            MP_OBJ_NEW_SMALL_INT(CAN_RX_FRAME_EVENT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RX_FIFO_NOT_EMPTY),   MP_OBJ_NEW_SMALL_INT(CAN_FIFO_NOT_EMPTY_EVENT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RX_FIFO_OVERRUN),    MP_OBJ_NEW_SMALL_INT(CAN_RX_FIFO_OVERRUN_EVENT) },
+    { MP_ROM_QSTR(MP_QSTR_RX_FRAME),            MP_ROM_INT(CAN_RX_FRAME_EVENT) },
+    { MP_ROM_QSTR(MP_QSTR_RX_FIFO_NOT_EMPTY),   MP_ROM_INT(CAN_FIFO_NOT_EMPTY_EVENT) },
+    { MP_ROM_QSTR(MP_QSTR_RX_FIFO_OVERRUN),     MP_ROM_INT(CAN_RX_FIFO_OVERRUN_EVENT) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_FILTER_LIST),         MP_OBJ_NEW_SMALL_INT(CAN_FILTER_LIST) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_FILTER_RANGE),        MP_OBJ_NEW_SMALL_INT(CAN_FILTER_RANGE) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_FILTER_MASK),         MP_OBJ_NEW_SMALL_INT(CAN_FILTER_MASK) },
+    { MP_ROM_QSTR(MP_QSTR_FILTER_LIST),         MP_ROM_INT(CAN_FILTER_LIST) },
+    { MP_ROM_QSTR(MP_QSTR_FILTER_RANGE),        MP_ROM_INT(CAN_FILTER_RANGE) },
+    { MP_ROM_QSTR(MP_QSTR_FILTER_MASK),         MP_ROM_INT(CAN_FILTER_MASK) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mach_can_locals_dict, mach_can_locals_dict_table);

@@ -34,8 +34,3 @@ DECLARE PRIVATE DATA
 /******************************************************************************
 DEFINE PUBLIC FUNCTIONS
  ******************************************************************************/
-
-void mpexception_init0 (void) {
-    // Create an exception object for interrupting through the stdin uart
-    MP_STATE_PORT(mp_kbd_exception) = mp_obj_new_exception(&mp_type_KeyboardInterrupt);
-}

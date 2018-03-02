@@ -19,7 +19,6 @@
 #include "py/stream.h"
 #include "py/mperrno.h"
 #include "mpexception.h"
-#include "pybioctl.h"
 #include "esp32_mphal.h"
 
 #include "modnetwork.h"
@@ -89,32 +88,32 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_1(sigfox_info_obj, sigfox_info);
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(sigfox_reset_obj, sigfox_reset);
 
 
-STATIC const mp_map_elem_t sigfox_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                (mp_obj_t)&sigfox_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_mac),                 (mp_obj_t)&sigfox_mac_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_id),                  (mp_obj_t)&sigfox_id_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_pac),                 (mp_obj_t)&sigfox_pac_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_test_mode),           (mp_obj_t)&sigfox_test_mode_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_cw),                  (mp_obj_t)&sigfox_cw_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_frequencies),         (mp_obj_t)&sigfox_frequencies_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_config),              (mp_obj_t)&sigfox_config_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_public_key),          (mp_obj_t)&sigfox_public_key_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_version),             (mp_obj_t)&sigfox_version_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_rssi),                (mp_obj_t)&sigfox_rssi_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_rssi_offset),         (mp_obj_t)&sigfox_rssi_offset_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_freq_offset),         (mp_obj_t)&sigfox_freq_offset_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_info),                (mp_obj_t)&sigfox_info_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_reset),               (mp_obj_t)&sigfox_reset_obj },
+STATIC const mp_rom_map_elem_t sigfox_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_init),                MP_ROM_PTR(&sigfox_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_mac),                 MP_ROM_PTR(&sigfox_mac_obj) },
+    { MP_ROM_QSTR(MP_QSTR_id),                  MP_ROM_PTR(&sigfox_id_obj) },
+    { MP_ROM_QSTR(MP_QSTR_pac),                 MP_ROM_PTR(&sigfox_pac_obj) },
+    { MP_ROM_QSTR(MP_QSTR_test_mode),           MP_ROM_PTR(&sigfox_test_mode_obj) },
+    { MP_ROM_QSTR(MP_QSTR_cw),                  MP_ROM_PTR(&sigfox_cw_obj) },
+    { MP_ROM_QSTR(MP_QSTR_frequencies),         MP_ROM_PTR(&sigfox_frequencies_obj) },
+    { MP_ROM_QSTR(MP_QSTR_config),              MP_ROM_PTR(&sigfox_config_obj) },
+    { MP_ROM_QSTR(MP_QSTR_public_key),          MP_ROM_PTR(&sigfox_public_key_obj) },
+    { MP_ROM_QSTR(MP_QSTR_version),             MP_ROM_PTR(&sigfox_version_obj) },
+    { MP_ROM_QSTR(MP_QSTR_rssi),                MP_ROM_PTR(&sigfox_rssi_obj) },
+    { MP_ROM_QSTR(MP_QSTR_rssi_offset),         MP_ROM_PTR(&sigfox_rssi_offset_obj) },
+    { MP_ROM_QSTR(MP_QSTR_freq_offset),         MP_ROM_PTR(&sigfox_freq_offset_obj) },
+    { MP_ROM_QSTR(MP_QSTR_info),                MP_ROM_PTR(&sigfox_info_obj) },
+    { MP_ROM_QSTR(MP_QSTR_reset),               MP_ROM_PTR(&sigfox_reset_obj) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SIGFOX),              MP_OBJ_NEW_SMALL_INT(E_SIGFOX_MODE_SIGFOX) },
+    { MP_ROM_QSTR(MP_QSTR_SIGFOX),              MP_ROM_INT(E_SIGFOX_MODE_SIGFOX) },
 #if !defined(FIPY) && !defined(LOPY4)
-    { MP_OBJ_NEW_QSTR(MP_QSTR_FSK),                 MP_OBJ_NEW_SMALL_INT(E_SIGFOX_MODE_FSK) },
+    { MP_ROM_QSTR(MP_QSTR_FSK),                 MP_ROM_INT(E_SIGFOX_MODE_FSK) },
 #endif
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RCZ1),                MP_OBJ_NEW_SMALL_INT(E_SIGFOX_RCZ1) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RCZ2),                MP_OBJ_NEW_SMALL_INT(E_SIGFOX_RCZ2) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RCZ3),                MP_OBJ_NEW_SMALL_INT(E_SIGFOX_RCZ3) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RCZ4),                MP_OBJ_NEW_SMALL_INT(E_SIGFOX_RCZ4) },
+    { MP_ROM_QSTR(MP_QSTR_RCZ1),                MP_ROM_INT(E_SIGFOX_RCZ1) },
+    { MP_ROM_QSTR(MP_QSTR_RCZ2),                MP_ROM_INT(E_SIGFOX_RCZ2) },
+    { MP_ROM_QSTR(MP_QSTR_RCZ3),                MP_ROM_INT(E_SIGFOX_RCZ3) },
+    { MP_ROM_QSTR(MP_QSTR_RCZ4),                MP_ROM_INT(E_SIGFOX_RCZ4) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(sigfox_locals_dict, sigfox_locals_dict_table);

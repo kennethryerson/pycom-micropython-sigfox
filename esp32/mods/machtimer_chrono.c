@@ -108,14 +108,14 @@ STATIC mp_obj_t chrono_reset(mp_obj_t self_in) {
 MP_DEFINE_CONST_FUN_OBJ_1(chrono_reset_obj, chrono_reset);
 
 
-STATIC const mp_map_elem_t mach_timer_chrono_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___name__),    MP_OBJ_NEW_QSTR(MP_QSTR_Chrono) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_read),        (mp_obj_t) &chrono_read_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_read_ms),     (mp_obj_t) &chrono_read_ms_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_read_us),     (mp_obj_t) &chrono_read_us_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_start),       (mp_obj_t) &chrono_start_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_stop),        (mp_obj_t) &chrono_stop_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_reset),       (mp_obj_t) &chrono_reset_obj },
+STATIC const mp_rom_map_elem_t mach_timer_chrono_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__),    MP_ROM_QSTR(MP_QSTR_Chrono) },
+    { MP_ROM_QSTR(MP_QSTR_read),        MP_ROM_PTR(&chrono_read_obj) },
+    { MP_ROM_QSTR(MP_QSTR_read_ms),     MP_ROM_PTR(&chrono_read_ms_obj) },
+    { MP_ROM_QSTR(MP_QSTR_read_us),     MP_ROM_PTR(&chrono_read_us_obj) },
+    { MP_ROM_QSTR(MP_QSTR_start),       MP_ROM_PTR(&chrono_start_obj) },
+    { MP_ROM_QSTR(MP_QSTR_stop),        MP_ROM_PTR(&chrono_stop_obj) },
+    { MP_ROM_QSTR(MP_QSTR_reset),       MP_ROM_PTR(&chrono_reset_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mach_timer_chrono_dict, mach_timer_chrono_dict_table);

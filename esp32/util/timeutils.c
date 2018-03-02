@@ -154,6 +154,13 @@ mp_time_t timeutils_seconds_since_epoch(mp_uint_t year, mp_uint_t month,
         + ((mp_time_t) (year - 1970)) * 31536000;
 }
 
+// this function is a hack to allow external libs to use POSIX epoch
+// standard MicroPython uses a 2000-1-1 epoch by default
+mp_uint_t timeutils_seconds_since_2000(mp_uint_t year, mp_uint_t month,
+    mp_uint_t date, mp_uint_t hour, mp_uint_t minute, mp_uint_t second) {
+    return timeutils_seconds_since_epoch(year, month, date, hour, minute, second);
+}
+
 mp_time_t timeutils_mktime(mp_uint_t year, mp_int_t month, mp_int_t mday,
     mp_int_t hours, mp_int_t minutes, mp_int_t seconds) {
 

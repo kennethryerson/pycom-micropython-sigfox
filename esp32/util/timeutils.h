@@ -51,6 +51,9 @@ void timeutils_seconds_since_epoch_to_struct_time(mp_time_t t,
 mp_time_t timeutils_seconds_since_epoch(mp_uint_t year, mp_uint_t month,
     mp_uint_t date, mp_uint_t hour, mp_uint_t minute, mp_uint_t second);
 
+mp_uint_t timeutils_seconds_since_2000(mp_uint_t year, mp_uint_t month,
+    mp_uint_t date, mp_uint_t hour, mp_uint_t minute, mp_uint_t second);
+
 mp_time_t timeutils_mktime(mp_uint_t year, mp_int_t month, mp_int_t mday,
     mp_int_t hours, mp_int_t minutes, mp_int_t seconds);
 

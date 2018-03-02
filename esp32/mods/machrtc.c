@@ -240,14 +240,14 @@ STATIC mp_obj_t mach_rtc_has_synced (mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mach_rtc_has_synced_obj, mach_rtc_has_synced);
 
-STATIC const mp_map_elem_t mach_rtc_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                (mp_obj_t)&mach_rtc_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_now),                 (mp_obj_t)&mach_rtc_now_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ntp_sync),            (mp_obj_t)&mach_rtc_ntp_sync_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_synced),              (mp_obj_t)&mach_rtc_has_synced_obj },
+STATIC const mp_rom_map_elem_t mach_rtc_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_init),                MP_ROM_PTR(&mach_rtc_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_now),                 MP_ROM_PTR(&mach_rtc_now_obj) },
+    { MP_ROM_QSTR(MP_QSTR_ntp_sync),            MP_ROM_PTR(&mach_rtc_ntp_sync_obj) },
+    { MP_ROM_QSTR(MP_QSTR_synced),              MP_ROM_PTR(&mach_rtc_has_synced_obj) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_INTERNAL_RC),         MP_OBJ_NEW_SMALL_INT(RTC_SOURCE_INTERNAL_RC) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_XTAL_32KHZ),          MP_OBJ_NEW_SMALL_INT(RTC_SOURCE_EXTERNAL_XTAL) },
+    { MP_ROM_QSTR(MP_QSTR_INTERNAL_RC),         MP_ROM_INT(RTC_SOURCE_INTERNAL_RC) },
+    { MP_ROM_QSTR(MP_QSTR_XTAL_32KHZ),          MP_ROM_INT(RTC_SOURCE_EXTERNAL_XTAL) },
 };
 STATIC MP_DEFINE_CONST_DICT(mach_rtc_locals_dict, mach_rtc_locals_dict_table);
 

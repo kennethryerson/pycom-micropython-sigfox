@@ -136,9 +136,9 @@ STATIC mp_obj_t AES_encrypt(mp_obj_t self_in, mp_obj_t plaintext) {
 }
 MP_DEFINE_CONST_FUN_OBJ_2(AES_encrypt_obj, AES_encrypt);
 
-STATIC const mp_map_elem_t AES_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR_decrypt),    (mp_obj_t) &AES_decrypt_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_encrypt),    (mp_obj_t) &AES_encrypt_obj },
+STATIC const mp_rom_map_elem_t AES_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_decrypt),    MP_ROM_PTR(&AES_decrypt_obj) },
+    { MP_ROM_QSTR(MP_QSTR_encrypt),    MP_ROM_PTR(&AES_encrypt_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(AES_locals_dict, AES_locals_dict_table);
@@ -271,14 +271,14 @@ STATIC mp_obj_t getrandbits(mp_obj_t bits) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(getrandbits_obj, getrandbits);
 
-STATIC const mp_map_elem_t mp_module_AES_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___name__),            MP_OBJ_NEW_QSTR(MP_QSTR_uAES) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_MODE_ECB),            MP_OBJ_NEW_SMALL_INT(CRYPT_MODE_ECB) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_MODE_CBC),            MP_OBJ_NEW_SMALL_INT(CRYPT_MODE_CBC) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_MODE_CFB),            MP_OBJ_NEW_SMALL_INT(CRYPT_MODE_CFB) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_MODE_CTR),            MP_OBJ_NEW_SMALL_INT(CRYPT_MODE_CTR) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SEGMENT_8),           MP_OBJ_NEW_SMALL_INT(CRYPT_SEGMENT_8) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SEGMENT_128),         MP_OBJ_NEW_SMALL_INT(CRYPT_SEGMENT_128) },
+STATIC const mp_rom_map_elem_t mp_module_AES_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__),            MP_ROM_QSTR(MP_QSTR_uAES) },
+    { MP_ROM_QSTR(MP_QSTR_MODE_ECB),            MP_ROM_INT(CRYPT_MODE_ECB) },
+    { MP_ROM_QSTR(MP_QSTR_MODE_CBC),            MP_ROM_INT(CRYPT_MODE_CBC) },
+    { MP_ROM_QSTR(MP_QSTR_MODE_CFB),            MP_ROM_INT(CRYPT_MODE_CFB) },
+    { MP_ROM_QSTR(MP_QSTR_MODE_CTR),            MP_ROM_INT(CRYPT_MODE_CTR) },
+    { MP_ROM_QSTR(MP_QSTR_SEGMENT_8),           MP_ROM_INT(CRYPT_SEGMENT_8) },
+    { MP_ROM_QSTR(MP_QSTR_SEGMENT_128),         MP_ROM_INT(CRYPT_SEGMENT_128) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mp_module_AES_dict, mp_module_AES_dict_table);
@@ -291,10 +291,10 @@ STATIC const mp_obj_type_t mod_crypt_aes = {
 };
 
 
-STATIC const mp_map_elem_t module_ucrypto_globals_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___name__),            MP_OBJ_NEW_QSTR(MP_QSTR_ucrypto) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_AES),                 (mp_obj_t)&mod_crypt_aes },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_getrandbits),         (mp_obj_t)&getrandbits_obj },
+STATIC const mp_rom_map_elem_t module_ucrypto_globals_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__),            MP_ROM_QSTR(MP_QSTR_ucrypto) },
+    { MP_ROM_QSTR(MP_QSTR_AES),                 MP_ROM_PTR(&mod_crypt_aes) },
+    { MP_ROM_QSTR(MP_QSTR_getrandbits),         MP_ROM_PTR(&getrandbits_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(module_ucrypto_globals, module_ucrypto_globals_table);

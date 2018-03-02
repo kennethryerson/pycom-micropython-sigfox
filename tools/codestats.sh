@@ -24,17 +24,17 @@ MAKE="make -j2"
 
 # these are the binaries that are built; some have 2 or 3 depending on version
 bin_unix=unix/micropython
-bin_stmhal=stmhal/build-PYBV10/firmware.elf
+bin_stm32=stmhal/build-PYBV10/firmware.elf
 bin_barearm_1=bare-arm/build/flash.elf
 bin_barearm_2=bare-arm/build/firmware.elf
 bin_minimal=minimal/build/firmware.elf
-bin_cc3200_1=cc3200/build/LAUNCHXL/application.axf 
-bin_cc3200_2=cc3200/build/LAUNCHXL/release/application.axf 
-bin_cc3200_3=cc3200/build/WIPY/release/application.axf 
+bin_cc3200_1=cc3200/build/LAUNCHXL/application.axf
+bin_cc3200_2=cc3200/build/LAUNCHXL/release/application.axf
+bin_cc3200_3=cc3200/build/WIPY/release/application.axf
 
 # start at zero size; if build fails reuse previous valid size
 size_unix="0"
-size_stmhal="0"
+size_stm32="0"
 size_barearm="0"
 size_minimal="0"
 size_cc3200="0"
@@ -86,7 +86,7 @@ function get_size3() {
 if [ -r $output ]; then
     last_rev=$(tail -n1 $output | $AWK '{print $1}')
 else
-    echo "# hash size_unix size_stmhal size_barearm size_minimal size_cc3200 pystones" > $output
+    echo "# hash size_unix size_stm32 size_barearm size_minimal size_cc3200 pystones" > $output
     last_rev="v1.0"
 fi
 
@@ -116,7 +116,7 @@ index 77d2945..dae0644 100644
 @@ -55,10 +55,8 @@ void msec_sleep_tv(struct timeval *tv) {
  #define MP_CLOCKS_PER_SEC CLOCKS_PER_SEC
  #endif
- 
+
 -#if defined(MP_CLOCKS_PER_SEC) && (MP_CLOCKS_PER_SEC == 1000000) // POSIX
 -#define CLOCK_DIV 1000.0
 -#elif defined(MP_CLOCKS_PER_SEC) && (MP_CLOCKS_PER_SEC == 1000) // WIN32
@@ -138,11 +138,11 @@ EOF
     # undo patch if it was applied
     git checkout unix/modtime.c
 
-    #### stmhal ####
+    #### stm32 ####
 
-    $RM $bin_stmhal
+    $RM $bin_stm32
     $MAKE -C stmhal board=PYBV10
-    size_stmhal=$(get_size $size_stmhal $bin_stmhal)
+    size_stm32=$(get_size $size_stm32 $bin_stm32)
 
     #### bare-arm ####
 
@@ -178,7 +178,7 @@ EOF
 
     #### output data for this commit ####
 
-    echo "$hash $size_unix $size_stmhal $size_barearm $size_minimal $size_cc3200 $pystones" >> $output
+    echo "$hash $size_unix $size_stm32 $size_barearm $size_minimal $size_cc3200 $pystones" >> $output
 
 done
 

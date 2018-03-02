@@ -65,7 +65,7 @@ APP_INC += -I$(ESP_IDF_COMP_PATH)/bt/bluedroid/api/include
 APP_INC += -I$(ESP_IDF_COMP_PATH)/bt/bluedroid/btc/include
 APP_INC += -I../lib/mp-readline
 APP_INC += -I../lib/netutils
-APP_INC += -I../lib/fatfs
+APP_INC += -I../lib/oofatfs
 APP_INC += -I../lib
 APP_INC += -I../drivers/sx127x
 APP_INC += -I../stmhal
@@ -76,6 +76,7 @@ APP_MAIN_SRC_C = \
 	serverstask.c \
 	pycom_config.c \
 	mpthreadport.c \
+	fatfs_port.c \
 
 APP_HAL_SRC_C = $(addprefix hal/,\
 	esp32_mphal.c \
@@ -104,8 +105,9 @@ APP_LIB_SRC_C = $(addprefix lib/,\
 	netutils/netutils.c \
 	utils/pyexec.c \
 	utils/interrupt_char.c \
-	fatfs/ff.c \
-	fatfs/option/ccsbcs.c \
+	utils/sys_stdio_mphal.c \
+	oofatfs/ff.c \
+	oofatfs/option/unicode.c \
 	)
 
 APP_MODS_SRC_C = $(addprefix mods/,\
@@ -121,7 +123,6 @@ APP_MODS_SRC_C = $(addprefix mods/,\
 	modusocket.c \
 	modnetwork.c \
 	modwlan.c \
-	moduselect.c \
 	modutime.c \
 	modpycom.c \
 	moduqueue.c \
@@ -133,6 +134,7 @@ APP_MODS_SRC_C = $(addprefix mods/,\
 	analog.c \
 	pybadc.c \
 	pybdac.c \
+	pybflash.c \
 	pybsd.c \
 	modussl.c \
 	modbt.c \
@@ -147,11 +149,6 @@ APP_MODS_LORA_SRC_C = $(addprefix mods/,\
 
 APP_STM_SRC_C = $(addprefix stmhal/,\
 	bufhelper.c \
-	builtin_open.c \
-	import.c \
-	input.c \
-	lexerfatfs.c \
-	pybstdio.c \
 	)
 
 APP_UTIL_SRC_C = $(addprefix util/,\
@@ -171,9 +168,6 @@ APP_UTIL_SRC_C = $(addprefix util/,\
 APP_FATFS_SRC_C = $(addprefix fatfs/src/,\
 	drivers/sflash_diskio.c \
 	drivers/sd_diskio.c \
-	option/syscall.c \
-	diskio.c \
-	ffconf.c \
 	)
 
 APP_LORA_SRC_C = $(addprefix lora/,\

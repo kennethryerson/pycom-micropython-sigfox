@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (c) 2017, Pycom Limited and its licensors.
 *
 * This software is licensed under the GNU GPL version 3 or any later version,
@@ -41,7 +41,6 @@
 #include "netutils.h"
 #include "modnetwork.h"
 #include "modusocket.h"
-#include "pybioctl.h"
 //#include "pybrtc.h"
 #include "serverstask.h"
 #include "mpexception.h"
@@ -456,17 +455,17 @@ STATIC mp_obj_t lte_reset(mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(lte_reset_obj, lte_reset);
 
-STATIC const mp_map_elem_t lte_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                (mp_obj_t)&lte_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_deinit),              (mp_obj_t)&lte_deinit_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_attach),              (mp_obj_t)&lte_attach_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_dettach),             (mp_obj_t)&lte_dettach_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_isattached),          (mp_obj_t)&lte_isattached_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_connect),             (mp_obj_t)&lte_connect_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_disconnect),          (mp_obj_t)&lte_disconnect_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_isconnected),         (mp_obj_t)&lte_isconnected_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_send_at_cmd),         (mp_obj_t)&lte_send_raw_at_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_reset),               (mp_obj_t)&lte_reset_obj },
+STATIC const mp_rom_map_elem_t lte_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_init),                MP_ROM_PTR(&lte_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_deinit),              MP_ROM_PTR(&lte_deinit_obj) },
+    { MP_ROM_QSTR(MP_QSTR_attach),              MP_ROM_PTR(&lte_attach_obj) },
+    { MP_ROM_QSTR(MP_QSTR_dettach),             MP_ROM_PTR(&lte_dettach_obj) },
+    { MP_ROM_QSTR(MP_QSTR_isattached),          MP_ROM_PTR(&lte_isattached_obj) },
+    { MP_ROM_QSTR(MP_QSTR_connect),             MP_ROM_PTR(&lte_connect_obj) },
+    { MP_ROM_QSTR(MP_QSTR_disconnect),          MP_ROM_PTR(&lte_disconnect_obj) },
+    { MP_ROM_QSTR(MP_QSTR_isconnected),         MP_ROM_PTR(&lte_isconnected_obj) },
+    { MP_ROM_QSTR(MP_QSTR_send_at_cmd),         MP_ROM_PTR(&lte_send_raw_at_obj) },
+    { MP_ROM_QSTR(MP_QSTR_reset),               MP_ROM_PTR(&lte_reset_obj) },
 
     // class constants
 };
@@ -777,7 +776,7 @@ static int lte_socket_settimeout(mod_network_socket_obj_t *s, mp_int_t timeout_m
 
 static int lte_socket_ioctl (mod_network_socket_obj_t *s, mp_uint_t request, mp_uint_t arg, int *_errno) {
     mp_int_t ret;
-    if (request == MP_IOCTL_POLL) {
+    if (request == MP_STREAM_POLL) {
         mp_uint_t flags = arg;
         ret = 0;
         int32_t sd = s->sock_base.u.sd;
@@ -789,13 +788,13 @@ static int lte_socket_ioctl (mod_network_socket_obj_t *s, mp_uint_t request, mp_
         FD_ZERO(&xfds);
 
         // set fds if needed
-        if (flags & MP_IOCTL_POLL_RD) {
+        if (flags & MP_STREAM_POLL_RD) {
             FD_SET(sd, &rfds);
         }
-        if (flags & MP_IOCTL_POLL_WR) {
+        if (flags & MP_STREAM_POLL_WR) {
             FD_SET(sd, &wfds);
         }
-        if (flags & MP_IOCTL_POLL_HUP) {
+        if (flags & MP_STREAM_POLL_HUP) {
             FD_SET(sd, &xfds);
         }
 
@@ -813,13 +812,13 @@ static int lte_socket_ioctl (mod_network_socket_obj_t *s, mp_uint_t request, mp_
 
         // check return of select
         if (FD_ISSET(sd, &rfds)) {
-            ret |= MP_IOCTL_POLL_RD;
+            ret |= MP_STREAM_POLL_RD;
         }
         if (FD_ISSET(sd, &wfds)) {
-            ret |= MP_IOCTL_POLL_WR;
+            ret |= MP_STREAM_POLL_WR;
         }
         if (FD_ISSET(sd, &xfds)) {
-            ret |= MP_IOCTL_POLL_HUP;
+            ret |= MP_STREAM_POLL_HUP;
         }
     } else {
         *_errno = MP_EINVAL;

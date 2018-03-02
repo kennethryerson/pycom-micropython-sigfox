@@ -1,5 +1,5 @@
 /*
- * This file is part of the Micro Python project, http://micropython.org/
+ * This file is part of the MicroPython project, http://micropython.org/
  *
  * The MIT License (MIT)
  *
@@ -24,11 +24,9 @@
  * THE SOFTWARE.
  */
 
-#include STM32_HAL_H
-
-#include "flash.h"
-#include "mpconfigport.h"
+#include "py/mpconfig.h"
 #include "py/misc.h"
+#include "flash.h"
 
 typedef struct {
     uint32_t base_address;
@@ -230,7 +228,7 @@ void flash_write(uint32_t flash_dest, const uint32_t *src, uint32_t num_word32) 
 
     // program the flash word by word
     for (int i = 0; i < num_word32; i++) {
-        if (HAL_FLASH_Program(TYPEPROGRAM_WORD, flash_dest, *src) != HAL_OK) {
+        if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, flash_dest, *src) != HAL_OK) {
             // error occurred during flash write
             HAL_FLASH_Lock(); // lock the flash
             return;

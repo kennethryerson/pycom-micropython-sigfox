@@ -526,55 +526,54 @@ STATIC mp_obj_t socket_makefile(mp_uint_t n_args, const mp_obj_t *args) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(socket_makefile_obj, 1, 6, socket_makefile);
 
-STATIC const mp_map_elem_t socket_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___del__),         (mp_obj_t)&socket_close_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_close),           (mp_obj_t)&socket_close_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_bind),            (mp_obj_t)&socket_bind_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_listen),          (mp_obj_t)&socket_listen_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_accept),          (mp_obj_t)&socket_accept_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_connect),         (mp_obj_t)&socket_connect_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_send),            (mp_obj_t)&socket_send_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_sendall),         (mp_obj_t)&socket_send_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_recv),            (mp_obj_t)&socket_recv_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_sendto),          (mp_obj_t)&socket_sendto_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_recvfrom),        (mp_obj_t)&socket_recvfrom_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_setsockopt),      (mp_obj_t)&socket_setsockopt_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_settimeout),      (mp_obj_t)&socket_settimeout_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_setblocking),     (mp_obj_t)&socket_setblocking_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_makefile),        (mp_obj_t)&socket_makefile_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_fileno),          (mp_obj_t)&socket_fileno_obj },
+STATIC const mp_rom_map_elem_t socket_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___del__),         MP_ROM_PTR(&socket_close_obj) },
+    { MP_ROM_QSTR(MP_QSTR_close),           MP_ROM_PTR(&socket_close_obj) },
+    { MP_ROM_QSTR(MP_QSTR_bind),            MP_ROM_PTR(&socket_bind_obj) },
+    { MP_ROM_QSTR(MP_QSTR_listen),          MP_ROM_PTR(&socket_listen_obj) },
+    { MP_ROM_QSTR(MP_QSTR_accept),          MP_ROM_PTR(&socket_accept_obj) },
+    { MP_ROM_QSTR(MP_QSTR_connect),         MP_ROM_PTR(&socket_connect_obj) },
+    { MP_ROM_QSTR(MP_QSTR_send),            MP_ROM_PTR(&socket_send_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sendall),         MP_ROM_PTR(&socket_send_obj) },
+    { MP_ROM_QSTR(MP_QSTR_recv),            MP_ROM_PTR(&socket_recv_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sendto),          MP_ROM_PTR(&socket_sendto_obj) },
+    { MP_ROM_QSTR(MP_QSTR_recvfrom),        MP_ROM_PTR(&socket_recvfrom_obj) },
+    { MP_ROM_QSTR(MP_QSTR_setsockopt),      MP_ROM_PTR(&socket_setsockopt_obj) },
+    { MP_ROM_QSTR(MP_QSTR_settimeout),      MP_ROM_PTR(&socket_settimeout_obj) },
+    { MP_ROM_QSTR(MP_QSTR_setblocking),     MP_ROM_PTR(&socket_setblocking_obj) },
+    { MP_ROM_QSTR(MP_QSTR_makefile),        MP_ROM_PTR(&socket_makefile_obj) },
+    { MP_ROM_QSTR(MP_QSTR_fileno),          MP_ROM_PTR(&socket_fileno_obj) },
 
     // stream methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_read),            (mp_obj_t)&mp_stream_read_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_readall),         (mp_obj_t)&mp_stream_readall_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_readinto),        (mp_obj_t)&mp_stream_readinto_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_readline),        (mp_obj_t)&mp_stream_unbuffered_readline_obj},
-    { MP_OBJ_NEW_QSTR(MP_QSTR_write),           (mp_obj_t)&mp_stream_write_obj },
+    { MP_ROM_QSTR(MP_QSTR_read),            MP_ROM_PTR(&mp_stream_read_obj) },
+    { MP_ROM_QSTR(MP_QSTR_readinto),        MP_ROM_PTR(&mp_stream_readinto_obj) },
+    { MP_ROM_QSTR(MP_QSTR_readline),        MP_ROM_PTR(&mp_stream_unbuffered_readline_obj)},
+    { MP_ROM_QSTR(MP_QSTR_write),           MP_ROM_PTR(&mp_stream_write_obj) },
 };
 
 MP_DEFINE_CONST_DICT(socket_locals_dict, socket_locals_dict_table);
 
 #if defined (LOPY) || defined(LOPY4) || defined (FIPY)
-STATIC const mp_map_elem_t raw_socket_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___del__),         (mp_obj_t)&socket_close_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_close),           (mp_obj_t)&socket_close_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_send),            (mp_obj_t)&socket_send_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_recv),            (mp_obj_t)&socket_recv_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_recvfrom),        (mp_obj_t)&socket_recvfrom_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_settimeout),      (mp_obj_t)&socket_settimeout_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_bind),            (mp_obj_t)&socket_bind_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_setblocking),     (mp_obj_t)&socket_setblocking_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_setsockopt),      (mp_obj_t)&socket_setsockopt_obj },
+STATIC const mp_rom_map_elem_t raw_socket_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___del__),         MP_ROM_PTR(&socket_close_obj) },
+    { MP_ROM_QSTR(MP_QSTR_close),           MP_ROM_PTR(&socket_close_obj) },
+    { MP_ROM_QSTR(MP_QSTR_send),            MP_ROM_PTR(&socket_send_obj) },
+    { MP_ROM_QSTR(MP_QSTR_recv),            MP_ROM_PTR(&socket_recv_obj) },
+    { MP_ROM_QSTR(MP_QSTR_recvfrom),        MP_ROM_PTR(&socket_recvfrom_obj) },
+    { MP_ROM_QSTR(MP_QSTR_settimeout),      MP_ROM_PTR(&socket_settimeout_obj) },
+    { MP_ROM_QSTR(MP_QSTR_bind),            MP_ROM_PTR(&socket_bind_obj) },
+    { MP_ROM_QSTR(MP_QSTR_setblocking),     MP_ROM_PTR(&socket_setblocking_obj) },
+    { MP_ROM_QSTR(MP_QSTR_setsockopt),      MP_ROM_PTR(&socket_setsockopt_obj) },
 };
 #else   // SIPY
-STATIC const mp_map_elem_t raw_socket_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___del__),         (mp_obj_t)&socket_close_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_close),           (mp_obj_t)&socket_close_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_send),            (mp_obj_t)&socket_send_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_recv),            (mp_obj_t)&socket_recv_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_settimeout),      (mp_obj_t)&socket_settimeout_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_setblocking),     (mp_obj_t)&socket_setblocking_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_setsockopt),      (mp_obj_t)&socket_setsockopt_obj },
+STATIC const mp_rom_map_elem_t raw_socket_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___del__),         MP_ROM_PTR(&socket_close_obj) },
+    { MP_ROM_QSTR(MP_QSTR_close),           MP_ROM_PTR(&socket_close_obj) },
+    { MP_ROM_QSTR(MP_QSTR_send),            MP_ROM_PTR(&socket_send_obj) },
+    { MP_ROM_QSTR(MP_QSTR_recv),            MP_ROM_PTR(&socket_recv_obj) },
+    { MP_ROM_QSTR(MP_QSTR_settimeout),      MP_ROM_PTR(&socket_settimeout_obj) },
+    { MP_ROM_QSTR(MP_QSTR_setblocking),     MP_ROM_PTR(&socket_setblocking_obj) },
+    { MP_ROM_QSTR(MP_QSTR_setsockopt),      MP_ROM_PTR(&socket_setsockopt_obj) },
 };
 #endif
 
@@ -586,7 +585,7 @@ STATIC mp_uint_t socket_read(mp_obj_t self_in, void *buf, mp_uint_t size, int *e
     mp_int_t ret = self->sock_base.nic_type->n_recv(self, buf, size, errcode);
     MP_THREAD_GIL_ENTER();
     if (ret < 0) {
-//        // we need to ignore the socket closed error here because a readall() or read() without params
+//        // we need to ignore the socket closed error here because a read() without params
 //        // only returns when the socket is closed by the other end
 //        if (*errcode != ESECCLOSED) {
             ret = MP_STREAM_ERROR;
@@ -677,54 +676,54 @@ STATIC mp_obj_t mod_usocket_getaddrinfo(mp_obj_t host_in, mp_obj_t port_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(mod_usocket_getaddrinfo_obj, mod_usocket_getaddrinfo);
 
-STATIC const mp_map_elem_t mp_module_usocket_globals_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___name__),        MP_OBJ_NEW_QSTR(MP_QSTR_usocket) },
+STATIC const mp_rom_map_elem_t mp_module_usocket_globals_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__),        MP_ROM_QSTR(MP_QSTR_usocket) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_socket),          (mp_obj_t)&socket_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_getaddrinfo),     (mp_obj_t)&mod_usocket_getaddrinfo_obj },
+    { MP_ROM_QSTR(MP_QSTR_socket),          MP_ROM_PTR(&socket_type) },
+    { MP_ROM_QSTR(MP_QSTR_getaddrinfo),     MP_ROM_PTR(&mod_usocket_getaddrinfo_obj) },
 
     // class exceptions
-    { MP_OBJ_NEW_QSTR(MP_QSTR_error),           (mp_obj_t)&mp_type_OSError },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_timeout),         (mp_obj_t)&mp_type_TimeoutError },
+    { MP_ROM_QSTR(MP_QSTR_error),           MP_ROM_PTR(&mp_type_OSError) },
+    { MP_ROM_QSTR(MP_QSTR_timeout),         MP_ROM_PTR(&mp_type_TimeoutError) },
 
     // class constants
-    { MP_OBJ_NEW_QSTR(MP_QSTR_AF_INET),         MP_OBJ_NEW_SMALL_INT(AF_INET) },
+    { MP_ROM_QSTR(MP_QSTR_AF_INET),         MP_ROM_INT(AF_INET) },
 #if defined (LOPY) || defined (LOPY4) || defined (FIPY)
-    { MP_OBJ_NEW_QSTR(MP_QSTR_AF_LORA),         MP_OBJ_NEW_SMALL_INT(AF_LORA) },
+    { MP_ROM_QSTR(MP_QSTR_AF_LORA),         MP_ROM_INT(AF_LORA) },
 #endif
 
 #if defined (SIPY) || defined (LOPY4) || defined (FIPY)
-    { MP_OBJ_NEW_QSTR(MP_QSTR_AF_SIGFOX),       MP_OBJ_NEW_SMALL_INT(AF_SIGFOX) },
+    { MP_ROM_QSTR(MP_QSTR_AF_SIGFOX),       MP_ROM_INT(AF_SIGFOX) },
 #endif
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SOCK_STREAM),     MP_OBJ_NEW_SMALL_INT(SOCK_STREAM) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SOCK_DGRAM),      MP_OBJ_NEW_SMALL_INT(SOCK_DGRAM) },
+    { MP_ROM_QSTR(MP_QSTR_SOCK_STREAM),     MP_ROM_INT(SOCK_STREAM) },
+    { MP_ROM_QSTR(MP_QSTR_SOCK_DGRAM),      MP_ROM_INT(SOCK_DGRAM) },
 #if defined (LOPY) || defined (SIPY) || defined (LOPY4) || defined(FIPY)
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SOCK_RAW),        MP_OBJ_NEW_SMALL_INT(SOCK_RAW) },
+    { MP_ROM_QSTR(MP_QSTR_SOCK_RAW),        MP_ROM_INT(SOCK_RAW) },
 #endif
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_IPPROTO_TCP),     MP_OBJ_NEW_SMALL_INT(IPPROTO_TCP) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_IPPROTO_UDP),     MP_OBJ_NEW_SMALL_INT(IPPROTO_UDP) },
+    { MP_ROM_QSTR(MP_QSTR_IPPROTO_TCP),     MP_ROM_INT(IPPROTO_TCP) },
+    { MP_ROM_QSTR(MP_QSTR_IPPROTO_UDP),     MP_ROM_INT(IPPROTO_UDP) },
 #if defined(LOPY)
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SOL_LORA),        MP_OBJ_NEW_SMALL_INT(SOL_LORA) },
+    { MP_ROM_QSTR(MP_QSTR_SOL_LORA),        MP_ROM_INT(SOL_LORA) },
 #elif defined(SIPY)
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SOL_SIGFOX),      MP_OBJ_NEW_SMALL_INT(SOL_SIGFOX) },
+    { MP_ROM_QSTR(MP_QSTR_SOL_SIGFOX),      MP_ROM_INT(SOL_SIGFOX) },
 #elif defined(FIPY) || defined(LOPY4)
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SOL_LORA),        MP_OBJ_NEW_SMALL_INT(SOL_LORA) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SOL_SIGFOX),      MP_OBJ_NEW_SMALL_INT(SOL_SIGFOX) },
+    { MP_ROM_QSTR(MP_QSTR_SOL_LORA),        MP_ROM_INT(SOL_LORA) },
+    { MP_ROM_QSTR(MP_QSTR_SOL_SIGFOX),      MP_ROM_INT(SOL_SIGFOX) },
 #endif
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SOL_SOCKET),      MP_OBJ_NEW_SMALL_INT(SOL_SOCKET) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SO_REUSEADDR),    MP_OBJ_NEW_SMALL_INT(SO_REUSEADDR) },
+    { MP_ROM_QSTR(MP_QSTR_SOL_SOCKET),      MP_ROM_INT(SOL_SOCKET) },
+    { MP_ROM_QSTR(MP_QSTR_SO_REUSEADDR),    MP_ROM_INT(SO_REUSEADDR) },
 
 #if defined(LOPY) || defined (LOPY4) || defined(FIPY)
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SO_CONFIRMED),    MP_OBJ_NEW_SMALL_INT(SO_LORAWAN_CONFIRMED) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SO_DR),           MP_OBJ_NEW_SMALL_INT(SO_LORAWAN_DR) },
+    { MP_ROM_QSTR(MP_QSTR_SO_CONFIRMED),    MP_ROM_INT(SO_LORAWAN_CONFIRMED) },
+    { MP_ROM_QSTR(MP_QSTR_SO_DR),           MP_ROM_INT(SO_LORAWAN_DR) },
 #endif
 #if defined(SIPY) || defined (LOPY4) || defined(FIPY)
-     { MP_OBJ_NEW_QSTR(MP_QSTR_SO_RX),          MP_OBJ_NEW_SMALL_INT(SO_SIGFOX_RX) },
-     { MP_OBJ_NEW_QSTR(MP_QSTR_SO_TX_REPEAT),   MP_OBJ_NEW_SMALL_INT(SO_SIGFOX_TX_REPEAT) },
-     { MP_OBJ_NEW_QSTR(MP_QSTR_SO_OOB),         MP_OBJ_NEW_SMALL_INT(SO_SIGFOX_OOB) },
-     { MP_OBJ_NEW_QSTR(MP_QSTR_SO_BIT),         MP_OBJ_NEW_SMALL_INT(SO_SIGFOX_BIT) },
+     { MP_ROM_QSTR(MP_QSTR_SO_RX),          MP_ROM_INT(SO_SIGFOX_RX) },
+     { MP_ROM_QSTR(MP_QSTR_SO_TX_REPEAT),   MP_ROM_INT(SO_SIGFOX_TX_REPEAT) },
+     { MP_ROM_QSTR(MP_QSTR_SO_OOB),         MP_ROM_INT(SO_SIGFOX_OOB) },
+     { MP_ROM_QSTR(MP_QSTR_SO_BIT),         MP_ROM_INT(SO_SIGFOX_BIT) },
 #endif
 };
 

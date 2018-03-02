@@ -53,7 +53,7 @@ static mach_rmt_obj_t mach_rmt_obj[RMT_CHANNEL_MAX] = {
 STATIC mp_obj_t mach_rmt_init_helper(mach_rmt_obj_t *self, const mp_arg_val_t *args) {
 
     if(args[0].u_obj == mp_const_none) {
-        nlr_raise(mp_obj_new_exception_msg(&mp_type_ValueError, "GPIO must be defined!"));  
+        nlr_raise(mp_obj_new_exception_msg(&mp_type_ValueError, "GPIO must be defined!"));
     }
 
     gpio_num_t gpio = pin_find(args[0].u_obj)->pin_number;
@@ -97,8 +97,8 @@ STATIC mp_obj_t mach_rmt_init_helper(mach_rmt_obj_t *self, const mp_arg_val_t *a
             self->config.rx_config.filter_en = true;
             /* The register to store filter tick threshold is 8 bit long, counted in APB clock period, maximum value can be 255.
              * 0-31 is accepted by the user because 32x8 is 256 which is not accepted */
-            if(mp_obj_get_int(args[2].u_obj) <= 31) { 
-                self->config.rx_config.filter_ticks_thresh = mp_obj_get_int(args[2].u_obj) * 8; 
+            if(mp_obj_get_int(args[2].u_obj) <= 31) {
+                self->config.rx_config.filter_ticks_thresh = mp_obj_get_int(args[2].u_obj) * 8;
             }
             else {
                 nlr_raise(mp_obj_new_exception_msg(&mp_type_ValueError, "Filter threshold is accepted between values: 0-31, counted 100 nano sec!"));
@@ -152,7 +152,7 @@ STATIC mp_obj_t mach_rmt_init_helper(mach_rmt_obj_t *self, const mp_arg_val_t *a
     }
     else {
         /* 2 pulses are stored in 1 rmt_item32_t
-         * Because RMT memory block / channel is 1, maximum of 128 pulses can be received 
+         * Because RMT memory block / channel is 1, maximum of 128 pulses can be received
          * 130*sizeof(rmt_item32_t) + sizeof(size_t) + sizeof(int) of Ringbuffer space is needed,
          * where sizeof(size_t) + sizeof(int) is the header/administration cost of the Ringbuffer.
          * 128*sizeof(rmt_item32_t) + sizeof(size_t) + sizeof(int) is not enough, it does not allow to receive
@@ -198,7 +198,7 @@ STATIC mp_obj_t mach_rmt_make_new(const mp_obj_type_t *type, mp_uint_t n_args, m
     if(channel <= RMT_CHANNEL_1 || channel >= RMT_CHANNEL_MAX) {
         nlr_raise(mp_obj_new_exception_msg(&mp_type_ValueError, "Channel is invalid!"));
     }
-    
+
     self = &(mach_rmt_obj[channel]);
     self->base.type = &mach_rmt_type;
 
@@ -513,13 +513,13 @@ STATIC mp_obj_t mach_rmt_pulses_get(mp_uint_t n_args, const mp_obj_t *pos_args, 
 }
 MP_DEFINE_CONST_FUN_OBJ_KW(mach_rmt_pulses_get_obj, 0, mach_rmt_pulses_get);
 
-STATIC const mp_map_elem_t mach_rmt_locals_dict_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                (mp_obj_t)&mach_rmt_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_deinit),              (mp_obj_t)&mach_rmt_deinit_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_pulses_send),         (mp_obj_t)&mach_rmt_pulses_send_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_pulses_get),          (mp_obj_t)&mach_rmt_pulses_get_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_LOW),                 MP_OBJ_NEW_SMALL_INT(RMT_CARRIER_LEVEL_LOW) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_HIGH),                MP_OBJ_NEW_SMALL_INT(RMT_CARRIER_LEVEL_HIGH) },
+STATIC const mp_rom_map_elem_t mach_rmt_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_init),                MP_ROM_PTR(&mach_rmt_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_deinit),              MP_ROM_PTR(&mach_rmt_deinit_obj) },
+    { MP_ROM_QSTR(MP_QSTR_pulses_send),         MP_ROM_PTR(&mach_rmt_pulses_send_obj) },
+    { MP_ROM_QSTR(MP_QSTR_pulses_get),          MP_ROM_PTR(&mach_rmt_pulses_get_obj) },
+    { MP_ROM_QSTR(MP_QSTR_LOW),                 MP_ROM_INT(RMT_CARRIER_LEVEL_LOW) },
+    { MP_ROM_QSTR(MP_QSTR_HIGH),                MP_ROM_INT(RMT_CARRIER_LEVEL_HIGH) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mach_rmt_locals_dict, mach_rmt_locals_dict_table);

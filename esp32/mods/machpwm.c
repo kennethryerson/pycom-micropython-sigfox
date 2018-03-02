@@ -19,7 +19,6 @@
 #include "py/stream.h"
 #include "py/mphal.h"
 #include "py/gc.h"
-#include "pybioctl.h"
 #include "mpexception.h"
 #include "machpwm.h"
 #include "ledc.h"
@@ -65,9 +64,9 @@ STATIC mp_obj_t mach_pwm_channel_init_helper(mach_pwm_channel_obj_t *self) {
 }
 
 
-STATIC const mp_map_elem_t mach_pwm_channel_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t mach_pwm_channel_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_duty_cycle),       (mp_obj_t)&mach_pwm_channel_duty_obj}
+    { MP_ROM_QSTR(MP_QSTR_duty_cycle),       MP_ROM_PTR(&mach_pwm_channel_duty_obj)}
 };
 STATIC MP_DEFINE_CONST_DICT(mach_pwm_channel_locals_dict, mach_pwm_channel_locals_dict_table);
 
@@ -218,11 +217,11 @@ STATIC mp_obj_t mach_pwm_deinit(mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mach_pwm_deinit_obj, mach_pwm_deinit);
 
-STATIC const mp_map_elem_t mach_pwm_timer_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t mach_pwm_timer_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),          (mp_obj_t)&mach_pwm_init_obj },
-    // { MP_OBJ_NEW_QSTR(MP_QSTR_deinit),        (mp_obj_t)&mach_pwm_deinit_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_channel),       (mp_obj_t)&mach_pwm_channel_obj},
+    { MP_ROM_QSTR(MP_QSTR_init),          MP_ROM_PTR(&mach_pwm_init_obj) },
+    // { MP_ROM_QSTR(MP_QSTR_deinit),        MP_ROM_PTR(&mach_pwm_deinit_obj) },
+    { MP_ROM_QSTR(MP_QSTR_channel),       MP_ROM_PTR(&mach_pwm_channel_obj)},
 };
 STATIC MP_DEFINE_CONST_DICT(mach_pwm_timer_locals_dict, mach_pwm_timer_locals_dict_table);
 

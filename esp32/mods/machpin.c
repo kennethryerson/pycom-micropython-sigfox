@@ -121,7 +121,7 @@ void pin_init0(void) {
                continue;
             }
         #endif
-        
+
         #if defined (FIPY)
             if (self == &PIN_MODULE_P17 || self == &PIN_MODULE_P18 || self == &PIN_MODULE_P19 || self == &PIN_MODULE_P20) {
                continue;
@@ -621,38 +621,38 @@ void machpin_register_irq_c_handler(pin_obj_t *self, void *handler) {
     self->handler_arg = NULL;
 }
 
-STATIC const mp_map_elem_t pin_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t pin_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                    (mp_obj_t)&pin_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_value),                   (mp_obj_t)&pin_value_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_toggle),                  (mp_obj_t)&pin_toggle_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_id),                      (mp_obj_t)&pin_id_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_mode),                    (mp_obj_t)&pin_mode_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_pull),                    (mp_obj_t)&pin_pull_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_hold),                    (mp_obj_t)&pin_hold_obj },
-//    { MP_OBJ_NEW_QSTR(MP_QSTR_alt_list),                (mp_obj_t)&pin_alt_list_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_callback),                (mp_obj_t)&pin_callback_obj },
+    { MP_ROM_QSTR(MP_QSTR_init),                    MP_ROM_PTR(&pin_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_value),                   MP_ROM_PTR(&pin_value_obj) },
+    { MP_ROM_QSTR(MP_QSTR_toggle),                  MP_ROM_PTR(&pin_toggle_obj) },
+    { MP_ROM_QSTR(MP_QSTR_id),                      MP_ROM_PTR(&pin_id_obj) },
+    { MP_ROM_QSTR(MP_QSTR_mode),                    MP_ROM_PTR(&pin_mode_obj) },
+    { MP_ROM_QSTR(MP_QSTR_pull),                    MP_ROM_PTR(&pin_pull_obj) },
+    { MP_ROM_QSTR(MP_QSTR_hold),                    MP_ROM_PTR(&pin_hold_obj) },
+//    { MP_ROM_QSTR(MP_QSTR_alt_list),                MP_ROM_PTR(&pin_alt_list_obj) },
+    { MP_ROM_QSTR(MP_QSTR_callback),                MP_ROM_PTR(&pin_callback_obj) },
 
     // class attributes
-    { MP_OBJ_NEW_QSTR(MP_QSTR_module),                  (mp_obj_t)&pin_module_pins_obj_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_exp_board),               (mp_obj_t)&pin_exp_board_pins_obj_type },
+    { MP_ROM_QSTR(MP_QSTR_module),                  MP_ROM_PTR(&pin_module_pins_obj_type) },
+    { MP_ROM_QSTR(MP_QSTR_exp_board),               MP_ROM_PTR(&pin_exp_board_pins_obj_type) },
 
     // class constants
-    { MP_OBJ_NEW_QSTR(MP_QSTR_IN),                      MP_OBJ_NEW_SMALL_INT(GPIO_MODE_INPUT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_OUT),                     MP_OBJ_NEW_SMALL_INT(GPIO_MODE_OUTPUT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_OPEN_DRAIN),              MP_OBJ_NEW_SMALL_INT(GPIO_MODE_INPUT_OUTPUT_OD) },
+    { MP_ROM_QSTR(MP_QSTR_IN),                      MP_ROM_INT(GPIO_MODE_INPUT) },
+    { MP_ROM_QSTR(MP_QSTR_OUT),                     MP_ROM_INT(GPIO_MODE_OUTPUT) },
+    { MP_ROM_QSTR(MP_QSTR_OPEN_DRAIN),              MP_ROM_INT(GPIO_MODE_INPUT_OUTPUT_OD) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PULL_UP),                 MP_OBJ_NEW_SMALL_INT(MACHPIN_PULL_UP) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PULL_DOWN),               MP_OBJ_NEW_SMALL_INT(MACHPIN_PULL_DOWN) },
+    { MP_ROM_QSTR(MP_QSTR_PULL_UP),                 MP_ROM_INT(MACHPIN_PULL_UP) },
+    { MP_ROM_QSTR(MP_QSTR_PULL_DOWN),               MP_ROM_INT(MACHPIN_PULL_DOWN) },
 
-//    { MP_OBJ_NEW_QSTR(MP_QSTR_LOW_POWER),               MP_OBJ_NEW_SMALL_INT(0) },
-//    { MP_OBJ_NEW_QSTR(MP_QSTR_MED_POWER),               MP_OBJ_NEW_SMALL_INT(1) },
-//    { MP_OBJ_NEW_QSTR(MP_QSTR_HIGH_POWER),              MP_OBJ_NEW_SMALL_INT(2) },
+//    { MP_ROM_QSTR(MP_QSTR_LOW_POWER),               MP_ROM_INT(0) },
+//    { MP_ROM_QSTR(MP_QSTR_MED_POWER),               MP_ROM_INT(1) },
+//    { MP_ROM_QSTR(MP_QSTR_HIGH_POWER),              MP_ROM_INT(2) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_IRQ_FALLING),             MP_OBJ_NEW_SMALL_INT(GPIO_INTR_NEGEDGE) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_IRQ_RISING),              MP_OBJ_NEW_SMALL_INT(GPIO_INTR_POSEDGE) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_IRQ_LOW_LEVEL),           MP_OBJ_NEW_SMALL_INT(GPIO_INTR_LOW_LEVEL) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_IRQ_HIGH_LEVEL),          MP_OBJ_NEW_SMALL_INT(GPIO_INTR_HIGH_LEVEL) },
+    { MP_ROM_QSTR(MP_QSTR_IRQ_FALLING),             MP_ROM_INT(GPIO_INTR_NEGEDGE) },
+    { MP_ROM_QSTR(MP_QSTR_IRQ_RISING),              MP_ROM_INT(GPIO_INTR_POSEDGE) },
+    { MP_ROM_QSTR(MP_QSTR_IRQ_LOW_LEVEL),           MP_ROM_INT(GPIO_INTR_LOW_LEVEL) },
+    { MP_ROM_QSTR(MP_QSTR_IRQ_HIGH_LEVEL),          MP_ROM_INT(GPIO_INTR_HIGH_LEVEL) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(pin_locals_dict, pin_locals_dict_table);

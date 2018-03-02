@@ -25,7 +25,6 @@
 #include "bufhelper.h"
 #include "mpexception.h"
 #include "modnetwork.h"
-#include "pybioctl.h"
 #include "modusocket.h"
 #include "pycom_config.h"
 #include "modbt.h"
@@ -868,7 +867,7 @@ STATIC mp_obj_t bt_resolve_adv_data(mp_obj_t self_in, mp_obj_t adv_data, mp_obj_
                 return mp_obj_new_bytes(data, data_len);
             case ESP_BLE_AD_TYPE_NAME_SHORT:
             case ESP_BLE_AD_TYPE_NAME_CMPL:
-                return mp_obj_new_str((char *)data, data_len, false);
+                return mp_obj_new_str((char *)data, data_len);
             case ESP_BLE_AD_TYPE_TX_PWR:
                 return mp_obj_new_int(*(int8_t *)data);
             case ESP_BLE_AD_TYPE_DEV_CLASS:
@@ -1278,11 +1277,11 @@ error:
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(bt_characteristic_obj, 1, bt_characteristic);
 
 
-STATIC const mp_map_elem_t bt_gatts_service_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t bt_gatts_service_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_characteristic),          (mp_obj_t)&bt_characteristic_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_start),                   (mp_obj_t)&bt_service_start_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_stop),                    (mp_obj_t)&bt_service_stop_obj },
+    { MP_ROM_QSTR(MP_QSTR_characteristic),          MP_ROM_PTR(&bt_characteristic_obj) },
+    { MP_ROM_QSTR(MP_QSTR_start),                   MP_ROM_PTR(&bt_service_start_obj) },
+    { MP_ROM_QSTR(MP_QSTR_stop),                    MP_ROM_PTR(&bt_service_stop_obj) },
 };
 STATIC MP_DEFINE_CONST_DICT(bt_gatts_service_locals_dict, bt_gatts_service_locals_dict_table);
 
@@ -1376,12 +1375,12 @@ STATIC mp_obj_t bt_characteristic_config(mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(bt_characteristic_config_obj, bt_characteristic_config);
 
-STATIC const mp_map_elem_t bt_gatts_char_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t bt_gatts_char_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_value),          (mp_obj_t)&bt_characteristic_value_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_callback),       (mp_obj_t)&bt_characteristic_callback_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_events),         (mp_obj_t)&bt_characteristic_events_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_config),         (mp_obj_t)&bt_characteristic_config_obj },
+    { MP_ROM_QSTR(MP_QSTR_value),          MP_ROM_PTR(&bt_characteristic_value_obj) },
+    { MP_ROM_QSTR(MP_QSTR_callback),       MP_ROM_PTR(&bt_characteristic_callback_obj) },
+    { MP_ROM_QSTR(MP_QSTR_events),         MP_ROM_PTR(&bt_characteristic_events_obj) },
+    { MP_ROM_QSTR(MP_QSTR_config),         MP_ROM_PTR(&bt_characteristic_config_obj) },
 };
 STATIC MP_DEFINE_CONST_DICT(bt_gatts_char_locals_dict, bt_gatts_char_locals_dict_table);
 
@@ -1401,78 +1400,78 @@ STATIC mp_obj_t bt_gatts_disconnect_client(mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(bt_gatts_disconnect_client_obj, bt_gatts_disconnect_client);
 
-STATIC const mp_map_elem_t bt_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t bt_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_init),                    (mp_obj_t)&bt_init_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_deinit),                  (mp_obj_t)&bt_deinit_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_start_scan),              (mp_obj_t)&bt_start_scan_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_isscanning),              (mp_obj_t)&bt_isscanning_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_stop_scan),               (mp_obj_t)&bt_stop_scan_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_get_adv),                 (mp_obj_t)&bt_read_scan_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_get_advertisements),      (mp_obj_t)&bt_get_advertisements_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_resolve_adv_data),        (mp_obj_t)&bt_resolve_adv_data_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_connect),                 (mp_obj_t)&bt_connect_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_set_advertisement),       (mp_obj_t)&bt_set_advertisement_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_advertise),               (mp_obj_t)&bt_advertise_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_service),                 (mp_obj_t)&bt_service_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_callback),                (mp_obj_t)&bt_callback_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_events),                  (mp_obj_t)&bt_events_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_disconnect_client),       (mp_obj_t)&bt_gatts_disconnect_client_obj },
+    { MP_ROM_QSTR(MP_QSTR_init),                    MP_ROM_PTR(&bt_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_deinit),                  MP_ROM_PTR(&bt_deinit_obj) },
+    { MP_ROM_QSTR(MP_QSTR_start_scan),              MP_ROM_PTR(&bt_start_scan_obj) },
+    { MP_ROM_QSTR(MP_QSTR_isscanning),              MP_ROM_PTR(&bt_isscanning_obj) },
+    { MP_ROM_QSTR(MP_QSTR_stop_scan),               MP_ROM_PTR(&bt_stop_scan_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_adv),                 MP_ROM_PTR(&bt_read_scan_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_advertisements),      MP_ROM_PTR(&bt_get_advertisements_obj) },
+    { MP_ROM_QSTR(MP_QSTR_resolve_adv_data),        MP_ROM_PTR(&bt_resolve_adv_data_obj) },
+    { MP_ROM_QSTR(MP_QSTR_connect),                 MP_ROM_PTR(&bt_connect_obj) },
+    { MP_ROM_QSTR(MP_QSTR_set_advertisement),       MP_ROM_PTR(&bt_set_advertisement_obj) },
+    { MP_ROM_QSTR(MP_QSTR_advertise),               MP_ROM_PTR(&bt_advertise_obj) },
+    { MP_ROM_QSTR(MP_QSTR_service),                 MP_ROM_PTR(&bt_service_obj) },
+    { MP_ROM_QSTR(MP_QSTR_callback),                MP_ROM_PTR(&bt_callback_obj) },
+    { MP_ROM_QSTR(MP_QSTR_events),                  MP_ROM_PTR(&bt_events_obj) },
+    { MP_ROM_QSTR(MP_QSTR_disconnect_client),       MP_ROM_PTR(&bt_gatts_disconnect_client_obj) },
 
     // constants
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CONN_ADV),                MP_OBJ_NEW_SMALL_INT(ESP_BLE_EVT_CONN_ADV) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CONN_DIR_ADV),            MP_OBJ_NEW_SMALL_INT(ESP_BLE_EVT_CONN_DIR_ADV) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_DISC_ADV),                MP_OBJ_NEW_SMALL_INT(ESP_BLE_EVT_DISC_ADV) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_NON_CONN_ADV),            MP_OBJ_NEW_SMALL_INT(ESP_BLE_EVT_NON_CONN_ADV) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SCAN_RSP),                MP_OBJ_NEW_SMALL_INT(ESP_BLE_EVT_SCAN_RSP) },
+    { MP_ROM_QSTR(MP_QSTR_CONN_ADV),                MP_ROM_INT(ESP_BLE_EVT_CONN_ADV) },
+    { MP_ROM_QSTR(MP_QSTR_CONN_DIR_ADV),            MP_ROM_INT(ESP_BLE_EVT_CONN_DIR_ADV) },
+    { MP_ROM_QSTR(MP_QSTR_DISC_ADV),                MP_ROM_INT(ESP_BLE_EVT_DISC_ADV) },
+    { MP_ROM_QSTR(MP_QSTR_NON_CONN_ADV),            MP_ROM_INT(ESP_BLE_EVT_NON_CONN_ADV) },
+    { MP_ROM_QSTR(MP_QSTR_SCAN_RSP),                MP_ROM_INT(ESP_BLE_EVT_SCAN_RSP) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PUBLIC_ADDR),             MP_OBJ_NEW_SMALL_INT(BLE_ADDR_TYPE_PUBLIC) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RANDOM_ADDR),             MP_OBJ_NEW_SMALL_INT(BLE_ADDR_TYPE_RANDOM) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PUBLIC_RPA_ADDR),         MP_OBJ_NEW_SMALL_INT(BLE_ADDR_TYPE_RPA_PUBLIC) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RANDOM_RPA_ADDR),         MP_OBJ_NEW_SMALL_INT(BLE_ADDR_TYPE_RPA_RANDOM) },
+    { MP_ROM_QSTR(MP_QSTR_PUBLIC_ADDR),             MP_ROM_INT(BLE_ADDR_TYPE_PUBLIC) },
+    { MP_ROM_QSTR(MP_QSTR_RANDOM_ADDR),             MP_ROM_INT(BLE_ADDR_TYPE_RANDOM) },
+    { MP_ROM_QSTR(MP_QSTR_PUBLIC_RPA_ADDR),         MP_ROM_INT(BLE_ADDR_TYPE_RPA_PUBLIC) },
+    { MP_ROM_QSTR(MP_QSTR_RANDOM_RPA_ADDR),         MP_ROM_INT(BLE_ADDR_TYPE_RPA_RANDOM) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_FLAG),                MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_FLAG) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_16SRV_PART),          MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_16SRV_PART) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_T16SRV_CMPL),         MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_16SRV_CMPL) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_32SRV_PART),          MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_32SRV_PART) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_32SRV_CMPL),          MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_32SRV_CMPL) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_128SRV_PART),         MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_128SRV_PART) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_128SRV_CMPL),         MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_128SRV_CMPL) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_NAME_SHORT),          MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_NAME_SHORT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_NAME_CMPL),           MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_NAME_CMPL) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_TX_PWR),              MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_TX_PWR) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_DEV_CLASS),           MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_DEV_CLASS) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_SERVICE_DATA),        MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_SERVICE_DATA) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_APPEARANCE),          MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_APPEARANCE) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_ADV_INT),             MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_ADV_INT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_32SERVICE_DATA),      MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_32SERVICE_DATA) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_128SERVICE_DATA),     MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_TYPE_128SERVICE_DATA) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADV_MANUFACTURER_DATA),   MP_OBJ_NEW_SMALL_INT(ESP_BLE_AD_MANUFACTURER_SPECIFIC_TYPE) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_FLAG),                MP_ROM_INT(ESP_BLE_AD_TYPE_FLAG) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_16SRV_PART),          MP_ROM_INT(ESP_BLE_AD_TYPE_16SRV_PART) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_T16SRV_CMPL),         MP_ROM_INT(ESP_BLE_AD_TYPE_16SRV_CMPL) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_32SRV_PART),          MP_ROM_INT(ESP_BLE_AD_TYPE_32SRV_PART) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_32SRV_CMPL),          MP_ROM_INT(ESP_BLE_AD_TYPE_32SRV_CMPL) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_128SRV_PART),         MP_ROM_INT(ESP_BLE_AD_TYPE_128SRV_PART) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_128SRV_CMPL),         MP_ROM_INT(ESP_BLE_AD_TYPE_128SRV_CMPL) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_NAME_SHORT),          MP_ROM_INT(ESP_BLE_AD_TYPE_NAME_SHORT) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_NAME_CMPL),           MP_ROM_INT(ESP_BLE_AD_TYPE_NAME_CMPL) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_TX_PWR),              MP_ROM_INT(ESP_BLE_AD_TYPE_TX_PWR) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_DEV_CLASS),           MP_ROM_INT(ESP_BLE_AD_TYPE_DEV_CLASS) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_SERVICE_DATA),        MP_ROM_INT(ESP_BLE_AD_TYPE_SERVICE_DATA) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_APPEARANCE),          MP_ROM_INT(ESP_BLE_AD_TYPE_APPEARANCE) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_ADV_INT),             MP_ROM_INT(ESP_BLE_AD_TYPE_ADV_INT) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_32SERVICE_DATA),      MP_ROM_INT(ESP_BLE_AD_TYPE_32SERVICE_DATA) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_128SERVICE_DATA),     MP_ROM_INT(ESP_BLE_AD_TYPE_128SERVICE_DATA) },
+    { MP_ROM_QSTR(MP_QSTR_ADV_MANUFACTURER_DATA),   MP_ROM_INT(ESP_BLE_AD_MANUFACTURER_SPECIFIC_TYPE) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PROP_BROADCAST),          MP_OBJ_NEW_SMALL_INT(ESP_GATT_CHAR_PROP_BIT_BROADCAST) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PROP_READ),               MP_OBJ_NEW_SMALL_INT(ESP_GATT_CHAR_PROP_BIT_READ) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PROP_WRITE_NR),           MP_OBJ_NEW_SMALL_INT(ESP_GATT_CHAR_PROP_BIT_WRITE_NR) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PROP_WRITE),              MP_OBJ_NEW_SMALL_INT(ESP_GATT_CHAR_PROP_BIT_WRITE) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PROP_NOTIFY),             MP_OBJ_NEW_SMALL_INT(ESP_GATT_CHAR_PROP_BIT_NOTIFY) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PROP_INDICATE),           MP_OBJ_NEW_SMALL_INT(ESP_GATT_CHAR_PROP_BIT_INDICATE) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PROP_AUTH),               MP_OBJ_NEW_SMALL_INT(ESP_GATT_CHAR_PROP_BIT_AUTH) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PROP_EXT_PROP),           MP_OBJ_NEW_SMALL_INT(ESP_GATT_CHAR_PROP_BIT_EXT_PROP) },
+    { MP_ROM_QSTR(MP_QSTR_PROP_BROADCAST),          MP_ROM_INT(ESP_GATT_CHAR_PROP_BIT_BROADCAST) },
+    { MP_ROM_QSTR(MP_QSTR_PROP_READ),               MP_ROM_INT(ESP_GATT_CHAR_PROP_BIT_READ) },
+    { MP_ROM_QSTR(MP_QSTR_PROP_WRITE_NR),           MP_ROM_INT(ESP_GATT_CHAR_PROP_BIT_WRITE_NR) },
+    { MP_ROM_QSTR(MP_QSTR_PROP_WRITE),              MP_ROM_INT(ESP_GATT_CHAR_PROP_BIT_WRITE) },
+    { MP_ROM_QSTR(MP_QSTR_PROP_NOTIFY),             MP_ROM_INT(ESP_GATT_CHAR_PROP_BIT_NOTIFY) },
+    { MP_ROM_QSTR(MP_QSTR_PROP_INDICATE),           MP_ROM_INT(ESP_GATT_CHAR_PROP_BIT_INDICATE) },
+    { MP_ROM_QSTR(MP_QSTR_PROP_AUTH),               MP_ROM_INT(ESP_GATT_CHAR_PROP_BIT_AUTH) },
+    { MP_ROM_QSTR(MP_QSTR_PROP_EXT_PROP),           MP_ROM_INT(ESP_GATT_CHAR_PROP_BIT_EXT_PROP) },
 
     // Defined at https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CHAR_CONFIG_NOTIFY),      MP_OBJ_NEW_SMALL_INT(1 << 0) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CHAR_CONFIG_INDICATE),    MP_OBJ_NEW_SMALL_INT(1 << 1) },
+    { MP_ROM_QSTR(MP_QSTR_CHAR_CONFIG_NOTIFY),      MP_ROM_INT(1 << 0) },
+    { MP_ROM_QSTR(MP_QSTR_CHAR_CONFIG_INDICATE),    MP_ROM_INT(1 << 1) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_NEW_ADV_EVENT),           MP_OBJ_NEW_SMALL_INT(MOD_BT_GATTC_ADV_EVT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CLIENT_CONNECTED),        MP_OBJ_NEW_SMALL_INT(MOD_BT_GATTS_CONN_EVT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CLIENT_DISCONNECTED),     MP_OBJ_NEW_SMALL_INT(MOD_BT_GATTS_DISCONN_EVT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CHAR_READ_EVENT),         MP_OBJ_NEW_SMALL_INT(MOD_BT_GATTS_READ_EVT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CHAR_WRITE_EVENT),        MP_OBJ_NEW_SMALL_INT(MOD_BT_GATTS_WRITE_EVT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CHAR_NOTIFY_EVENT),       MP_OBJ_NEW_SMALL_INT(MOD_BT_GATTC_NOTIFY_EVT) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CHAR_SUBSCRIBE_EVENT),    MP_OBJ_NEW_SMALL_INT(MOD_BT_GATTS_SUBSCRIBE_EVT) },
-    // { MP_OBJ_NEW_QSTR(MP_QSTR_CHAR_INDICATE_EVENT),     MP_OBJ_NEW_SMALL_INT(MOD_BT_GATTC_INDICATE_EVT) },
+    { MP_ROM_QSTR(MP_QSTR_NEW_ADV_EVENT),           MP_ROM_INT(MOD_BT_GATTC_ADV_EVT) },
+    { MP_ROM_QSTR(MP_QSTR_CLIENT_CONNECTED),        MP_ROM_INT(MOD_BT_GATTS_CONN_EVT) },
+    { MP_ROM_QSTR(MP_QSTR_CLIENT_DISCONNECTED),     MP_ROM_INT(MOD_BT_GATTS_DISCONN_EVT) },
+    { MP_ROM_QSTR(MP_QSTR_CHAR_READ_EVENT),         MP_ROM_INT(MOD_BT_GATTS_READ_EVT) },
+    { MP_ROM_QSTR(MP_QSTR_CHAR_WRITE_EVENT),        MP_ROM_INT(MOD_BT_GATTS_WRITE_EVT) },
+    { MP_ROM_QSTR(MP_QSTR_CHAR_NOTIFY_EVENT),       MP_ROM_INT(MOD_BT_GATTC_NOTIFY_EVT) },
+    { MP_ROM_QSTR(MP_QSTR_CHAR_SUBSCRIBE_EVENT),    MP_ROM_INT(MOD_BT_GATTS_SUBSCRIBE_EVT) },
+    // { MP_ROM_QSTR(MP_QSTR_CHAR_INDICATE_EVENT),     MP_ROM_INT(MOD_BT_GATTC_INDICATE_EVT) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_INT_ANT),                 MP_OBJ_NEW_SMALL_INT(ANTENNA_TYPE_INTERNAL) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_EXT_ANT),                 MP_OBJ_NEW_SMALL_INT(ANTENNA_TYPE_EXTERNAL) },
+    { MP_ROM_QSTR(MP_QSTR_INT_ANT),                 MP_ROM_INT(ANTENNA_TYPE_INTERNAL) },
+    { MP_ROM_QSTR(MP_QSTR_EXT_ANT),                 MP_ROM_INT(ANTENNA_TYPE_EXTERNAL) },
 };
 STATIC MP_DEFINE_CONST_DICT(bt_locals_dict, bt_locals_dict_table);
 
@@ -1536,11 +1535,11 @@ STATIC mp_obj_t bt_conn_services (mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(bt_conn_services_obj, bt_conn_services);
 
-STATIC const mp_map_elem_t bt_connection_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t bt_connection_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_isconnected),             (mp_obj_t)&bt_conn_isconnected_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_disconnect),              (mp_obj_t)&bt_conn_disconnect_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_services),                (mp_obj_t)&bt_conn_services_obj },
+    { MP_ROM_QSTR(MP_QSTR_isconnected),             MP_ROM_PTR(&bt_conn_isconnected_obj) },
+    { MP_ROM_QSTR(MP_QSTR_disconnect),              MP_ROM_PTR(&bt_conn_disconnect_obj) },
+    { MP_ROM_QSTR(MP_QSTR_services),                MP_ROM_PTR(&bt_conn_services_obj) },
 
 };
 STATIC MP_DEFINE_CONST_DICT(bt_connection_locals_dict, bt_connection_locals_dict_table);
@@ -1626,12 +1625,12 @@ STATIC mp_obj_t bt_srv_characteristics(mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(bt_srv_characteristics_obj, bt_srv_characteristics);
 
-STATIC const mp_map_elem_t bt_service_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t bt_service_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_isprimary),               (mp_obj_t)&bt_srv_isprimary_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_uuid),                    (mp_obj_t)&bt_srv_uuid_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_instance),                (mp_obj_t)&bt_srv_instance_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_characteristics),         (mp_obj_t)&bt_srv_characteristics_obj },
+    { MP_ROM_QSTR(MP_QSTR_isprimary),               MP_ROM_PTR(&bt_srv_isprimary_obj) },
+    { MP_ROM_QSTR(MP_QSTR_uuid),                    MP_ROM_PTR(&bt_srv_uuid_obj) },
+    { MP_ROM_QSTR(MP_QSTR_instance),                MP_ROM_PTR(&bt_srv_instance_obj) },
+    { MP_ROM_QSTR(MP_QSTR_characteristics),         MP_ROM_PTR(&bt_srv_characteristics_obj) },
 };
 STATIC MP_DEFINE_CONST_DICT(bt_service_locals_dict, bt_service_locals_dict_table);
 
@@ -1837,16 +1836,16 @@ STATIC mp_obj_t bt_char_value(mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(bt_char_value_obj, bt_char_value);
 
-STATIC const mp_map_elem_t bt_characteristic_locals_dict_table[] = {
+STATIC const mp_rom_map_elem_t bt_characteristic_locals_dict_table[] = {
     // instance methods
-    { MP_OBJ_NEW_QSTR(MP_QSTR_uuid),                    (mp_obj_t)&bt_char_uuid_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_instance),                (mp_obj_t)&bt_char_instance_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_properties),              (mp_obj_t)&bt_char_properties_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_read),                    (mp_obj_t)&bt_char_read_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_write),                   (mp_obj_t)&bt_char_write_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_callback),                (mp_obj_t)&bt_char_callback_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_value),                   (mp_obj_t)&bt_char_value_obj },
-    // { MP_OBJ_NEW_QSTR(MP_QSTR_descriptors),             (mp_obj_t)&bt_char_descriptors_obj },
+    { MP_ROM_QSTR(MP_QSTR_uuid),                    MP_ROM_PTR(&bt_char_uuid_obj) },
+    { MP_ROM_QSTR(MP_QSTR_instance),                MP_ROM_PTR(&bt_char_instance_obj) },
+    { MP_ROM_QSTR(MP_QSTR_properties),              MP_ROM_PTR(&bt_char_properties_obj) },
+    { MP_ROM_QSTR(MP_QSTR_read),                    MP_ROM_PTR(&bt_char_read_obj) },
+    { MP_ROM_QSTR(MP_QSTR_write),                   MP_ROM_PTR(&bt_char_write_obj) },
+    { MP_ROM_QSTR(MP_QSTR_callback),                MP_ROM_PTR(&bt_char_callback_obj) },
+    { MP_ROM_QSTR(MP_QSTR_value),                   MP_ROM_PTR(&bt_char_value_obj) },
+    // { MP_ROM_QSTR(MP_QSTR_descriptors),             MP_ROM_PTR(&bt_char_descriptors_obj) },
 };
 STATIC MP_DEFINE_CONST_DICT(bt_characteristic_locals_dict, bt_characteristic_locals_dict_table);
 

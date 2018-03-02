@@ -93,7 +93,7 @@ static int64_t mach_remaining_sleep_time;
 
 
 // Function name is not a typo - undocumented ESP-IDF to get die temperature
-uint8_t temprature_sens_read(); 
+uint8_t temprature_sens_read();
 
 
 void machine_init0(void) {
@@ -314,60 +314,60 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_0(machine_temperature_obj, machine_temperature);
 
 
 STATIC const mp_rom_map_elem_t machine_module_globals_table[] = {
-    { MP_OBJ_NEW_QSTR(MP_QSTR___name__),                MP_OBJ_NEW_QSTR(MP_QSTR_umachine) },
+    { MP_ROM_QSTR(MP_QSTR___name__),                MP_ROM_QSTR(MP_QSTR_umachine) },
 
-    { MP_ROM_QSTR(MP_QSTR_mem8),                        (mp_obj_t)(&machine_mem8_obj) },
-    { MP_ROM_QSTR(MP_QSTR_mem16),                       (mp_obj_t)(&machine_mem16_obj) },
-    { MP_ROM_QSTR(MP_QSTR_mem32),                       (mp_obj_t)(&machine_mem32_obj) },
+    { MP_ROM_QSTR(MP_QSTR_mem8),                    MP_ROM_PTR(&machine_mem8_obj) },
+    { MP_ROM_QSTR(MP_QSTR_mem16),                   MP_ROM_PTR(&machine_mem16_obj) },
+    { MP_ROM_QSTR(MP_QSTR_mem32),                   MP_ROM_PTR(&machine_mem32_obj) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_reset),                   (mp_obj_t)(&machine_reset_obj) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_freq),                    (mp_obj_t)(&machine_freq_obj) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_unique_id),               (mp_obj_t)(&machine_unique_id_obj) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_main),                    (mp_obj_t)(&machine_main_obj) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_rng),                     (mp_obj_t)(&machine_rng_get_obj) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_idle),                    (mp_obj_t)(&machine_idle_obj) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_sleep),                   (mp_obj_t)(&machine_sleep_obj) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_deepsleep),               (mp_obj_t)(&machine_deepsleep_obj) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_remaining_sleep_time),    (mp_obj_t)(&machine_remaining_sleep_time_obj) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_pin_deepsleep_wakeup),    (mp_obj_t)(&machine_pin_deepsleep_wakeup_obj) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_reset_cause),             (mp_obj_t)(&machine_reset_cause_obj) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_wake_reason),             (mp_obj_t)(&machine_wake_reason_obj) },
+    { MP_ROM_QSTR(MP_QSTR_reset),                   MP_ROM_PTR(&machine_reset_obj) },
+    { MP_ROM_QSTR(MP_QSTR_freq),                    MP_ROM_PTR(&machine_freq_obj) },
+    { MP_ROM_QSTR(MP_QSTR_unique_id),               MP_ROM_PTR(&machine_unique_id_obj) },
+    { MP_ROM_QSTR(MP_QSTR_main),                    MP_ROM_PTR(&machine_main_obj) },
+    { MP_ROM_QSTR(MP_QSTR_rng),                     MP_ROM_PTR(&machine_rng_get_obj) },
+    { MP_ROM_QSTR(MP_QSTR_idle),                    MP_ROM_PTR(&machine_idle_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sleep),                   MP_ROM_PTR(&machine_sleep_obj) },
+    { MP_ROM_QSTR(MP_QSTR_deepsleep),               MP_ROM_PTR(&machine_deepsleep_obj) },
+    { MP_ROM_QSTR(MP_QSTR_remaining_sleep_time),    MP_ROM_PTR(&machine_remaining_sleep_time_obj) },
+    { MP_ROM_QSTR(MP_QSTR_pin_deepsleep_wakeup),    MP_ROM_PTR(&machine_pin_deepsleep_wakeup_obj) },
+    { MP_ROM_QSTR(MP_QSTR_reset_cause),             MP_ROM_PTR(&machine_reset_cause_obj) },
+    { MP_ROM_QSTR(MP_QSTR_wake_reason),             MP_ROM_PTR(&machine_wake_reason_obj) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_disable_irq),             (mp_obj_t)&machine_disable_irq_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_enable_irq),              (mp_obj_t)&machine_enable_irq_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_info),                    (mp_obj_t)&machine_info_obj },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_temperature),             (mp_obj_t)&machine_temperature_obj },
+    { MP_ROM_QSTR(MP_QSTR_disable_irq),             MP_ROM_PTR(&machine_disable_irq_obj) },
+    { MP_ROM_QSTR(MP_QSTR_enable_irq),              MP_ROM_PTR(&machine_enable_irq_obj) },
+    { MP_ROM_QSTR(MP_QSTR_info),                    MP_ROM_PTR(&machine_info_obj) },
+    { MP_ROM_QSTR(MP_QSTR_temperature),             MP_ROM_PTR(&machine_temperature_obj) },
 
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_Pin),                     (mp_obj_t)&pin_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_UART),                    (mp_obj_t)&mach_uart_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SPI),                     (mp_obj_t)&mach_spi_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_I2C),                     (mp_obj_t)&machine_i2c_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PWM),                     (mp_obj_t)&mach_pwm_timer_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ADC),                     (mp_obj_t)&pyb_adc_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_DAC),                     (mp_obj_t)&pyb_dac_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SD),                      (mp_obj_t)&pyb_sd_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_Timer),                   (mp_obj_t)&mach_timer_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RTC),                     (mp_obj_t)&mach_rtc_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_WDT),                     (mp_obj_t)&mach_wdt_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_CAN),                     (mp_obj_t)&mach_can_type },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RMT),                     (mp_obj_t)&mach_rmt_type },
+    { MP_ROM_QSTR(MP_QSTR_Pin),                     MP_ROM_PTR(&pin_type) },
+    { MP_ROM_QSTR(MP_QSTR_UART),                    MP_ROM_PTR(&mach_uart_type) },
+    { MP_ROM_QSTR(MP_QSTR_SPI),                     MP_ROM_PTR(&mach_spi_type) },
+    { MP_ROM_QSTR(MP_QSTR_I2C),                     MP_ROM_PTR(&machine_i2c_type) },
+    { MP_ROM_QSTR(MP_QSTR_PWM),                     MP_ROM_PTR(&mach_pwm_timer_type) },
+    { MP_ROM_QSTR(MP_QSTR_ADC),                     MP_ROM_PTR(&pyb_adc_type) },
+    { MP_ROM_QSTR(MP_QSTR_DAC),                     MP_ROM_PTR(&pyb_dac_type) },
+    { MP_ROM_QSTR(MP_QSTR_SD),                      MP_ROM_PTR(&pyb_sd_type) },
+    { MP_ROM_QSTR(MP_QSTR_Timer),                   MP_ROM_PTR(&mach_timer_type) },
+    { MP_ROM_QSTR(MP_QSTR_RTC),                     MP_ROM_PTR(&mach_rtc_type) },
+    { MP_ROM_QSTR(MP_QSTR_WDT),                     MP_ROM_PTR(&mach_wdt_type) },
+    { MP_ROM_QSTR(MP_QSTR_CAN),                     MP_ROM_PTR(&mach_can_type) },
+    { MP_ROM_QSTR(MP_QSTR_RMT),                     MP_ROM_PTR(&mach_rmt_type) },
 
     // constants
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PWRON_RESET),         MP_OBJ_NEW_SMALL_INT(MPSLEEP_PWRON_RESET) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_HARD_RESET),          MP_OBJ_NEW_SMALL_INT(MPSLEEP_HARD_RESET) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_WDT_RESET),           MP_OBJ_NEW_SMALL_INT(MPSLEEP_WDT_RESET) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_DEEPSLEEP_RESET),     MP_OBJ_NEW_SMALL_INT(MPSLEEP_DEEPSLEEP_RESET) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_SOFT_RESET),          MP_OBJ_NEW_SMALL_INT(MPSLEEP_SOFT_RESET) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_BROWN_OUT_RESET),     MP_OBJ_NEW_SMALL_INT(MPSLEEP_BROWN_OUT_RESET) },
+    { MP_ROM_QSTR(MP_QSTR_PWRON_RESET),         MP_ROM_INT(MPSLEEP_PWRON_RESET) },
+    { MP_ROM_QSTR(MP_QSTR_HARD_RESET),          MP_ROM_INT(MPSLEEP_HARD_RESET) },
+    { MP_ROM_QSTR(MP_QSTR_WDT_RESET),           MP_ROM_INT(MPSLEEP_WDT_RESET) },
+    { MP_ROM_QSTR(MP_QSTR_DEEPSLEEP_RESET),     MP_ROM_INT(MPSLEEP_DEEPSLEEP_RESET) },
+    { MP_ROM_QSTR(MP_QSTR_SOFT_RESET),          MP_ROM_INT(MPSLEEP_SOFT_RESET) },
+    { MP_ROM_QSTR(MP_QSTR_BROWN_OUT_RESET),     MP_ROM_INT(MPSLEEP_BROWN_OUT_RESET) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PWRON_WAKE),          MP_OBJ_NEW_SMALL_INT(MPSLEEP_PWRON_WAKE) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_PIN_WAKE),            MP_OBJ_NEW_SMALL_INT(MPSLEEP_GPIO_WAKE) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_RTC_WAKE),            MP_OBJ_NEW_SMALL_INT(MPSLEEP_RTC_WAKE) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_ULP_WAKE),            MP_OBJ_NEW_SMALL_INT(MPSLEEP_ULP_WAKE) },
+    { MP_ROM_QSTR(MP_QSTR_PWRON_WAKE),          MP_ROM_INT(MPSLEEP_PWRON_WAKE) },
+    { MP_ROM_QSTR(MP_QSTR_PIN_WAKE),            MP_ROM_INT(MPSLEEP_GPIO_WAKE) },
+    { MP_ROM_QSTR(MP_QSTR_RTC_WAKE),            MP_ROM_INT(MPSLEEP_RTC_WAKE) },
+    { MP_ROM_QSTR(MP_QSTR_ULP_WAKE),            MP_ROM_INT(MPSLEEP_ULP_WAKE) },
 
-    { MP_OBJ_NEW_QSTR(MP_QSTR_WAKEUP_ALL_LOW),      MP_OBJ_NEW_SMALL_INT(ESP_EXT1_WAKEUP_ALL_LOW) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_WAKEUP_ANY_HIGH),     MP_OBJ_NEW_SMALL_INT(ESP_EXT1_WAKEUP_ANY_HIGH) },
+    { MP_ROM_QSTR(MP_QSTR_WAKEUP_ALL_LOW),      MP_ROM_INT(ESP_EXT1_WAKEUP_ALL_LOW) },
+    { MP_ROM_QSTR(MP_QSTR_WAKEUP_ANY_HIGH),     MP_ROM_INT(ESP_EXT1_WAKEUP_ANY_HIGH) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(machine_module_globals, machine_module_globals_table);
