@@ -1,5 +1,5 @@
 /*
- * This file is part of the Micro Python project, http://micropython.org/
+ * This file is part of the MicroPython project, http://micropython.org/
  *
  * The MIT License (MIT)
  *
@@ -31,7 +31,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "py/nlr.h"
 #include "py/runtime.h"
 #include "py/stream.h"
 #include "py/builtin.h"
@@ -47,7 +46,7 @@
 #ifdef MICROPY_CPYTHON_COMPAT
 STATIC void check_fd_is_open(const mp_obj_fdfile_t *o) {
     if (o->fd < 0) {
-        nlr_raise(mp_obj_new_exception_msg(&mp_type_ValueError, "I/O operation on closed file"));
+        mp_raise_ValueError("I/O operation on closed file");
     }
 }
 #else
@@ -218,7 +217,6 @@ STATIC mp_obj_t fdfile_make_new(const mp_obj_type_t *type, size_t n_args, size_t
 STATIC const mp_rom_map_elem_t rawfile_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_fileno), MP_ROM_PTR(&fdfile_fileno_obj) },
     { MP_ROM_QSTR(MP_QSTR_read), MP_ROM_PTR(&mp_stream_read_obj) },
-    { MP_ROM_QSTR(MP_QSTR_readall), MP_ROM_PTR(&mp_stream_readall_obj) },
     { MP_ROM_QSTR(MP_QSTR_readinto), MP_ROM_PTR(&mp_stream_readinto_obj) },
     { MP_ROM_QSTR(MP_QSTR_readline), MP_ROM_PTR(&mp_stream_unbuffered_readline_obj) },
     { MP_ROM_QSTR(MP_QSTR_readlines), MP_ROM_PTR(&mp_stream_unbuffered_readlines_obj) },
@@ -245,7 +243,7 @@ const mp_obj_type_t mp_type_fileio = {
     .name = MP_QSTR_FileIO,
     .print = fdfile_print,
     .make_new = fdfile_make_new,
-    .getiter = mp_identity,
+    .getiter = mp_identity_getiter,
     .iternext = mp_stream_unbuffered_iter,
     .protocol = &fileio_stream_p,
     .locals_dict = (mp_obj_dict_t*)&rawfile_locals_dict,
@@ -264,7 +262,7 @@ const mp_obj_type_t mp_type_textio = {
     .name = MP_QSTR_TextIOWrapper,
     .print = fdfile_print,
     .make_new = fdfile_make_new,
-    .getiter = mp_identity,
+    .getiter = mp_identity_getiter,
     .iternext = mp_stream_unbuffered_iter,
     .protocol = &textio_stream_p,
     .locals_dict = (mp_obj_dict_t*)&rawfile_locals_dict,

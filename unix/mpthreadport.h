@@ -23,14 +23,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef __MICROPY_INCLUDED_UNIX_MPTHREADPORT_H__
-#define __MICROPY_INCLUDED_UNIX_MPTHREADPORT_H__
 
+#include "py/mpconfig.h"
+#include "py/mpstate.h"
+#include "py/obj.h"
 #include <pthread.h>
+#include <stdlib.h>
 
 typedef pthread_mutex_t mp_thread_mutex_t;
 
+typedef struct _mp_obj_thread_lock_t {
+    mp_obj_base_t base;
+    mp_thread_mutex_t *mutex;
+    volatile bool locked;
+} mp_obj_thread_lock_t;
+
 void mp_thread_init(void);
 void mp_thread_gc_others(void);
-
-#endif // __MICROPY_INCLUDED_UNIX_MPTHREADPORT_H__
+mp_obj_thread_lock_t *mp_thread_new_thread_lock(void);

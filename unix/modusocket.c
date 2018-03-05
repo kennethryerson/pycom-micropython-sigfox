@@ -1,5 +1,5 @@
 /*
- * This file is part of the Micro Python project, http://micropython.org/
+ * This file is part of the MicroPython project, http://micropython.org/
  *
  * The MIT License (MIT)
  *
@@ -38,7 +38,6 @@
 #include <netdb.h>
 #include <errno.h>
 
-#include "py/nlr.h"
 #include "py/objtuple.h"
 #include "py/objstr.h"
 #include "py/runtime.h"
@@ -58,10 +57,8 @@
   from socket_more_funcs2 import *
   -------------------
   I.e. this module should stay lean, and more functions (if needed)
-  should be add to seperate modules (C or Python level).
+  should be add to separate modules (C or Python level).
  */
-
-#define MICROPY_SOCKET_EXTRA (0)
 
 // This type must "inherit" from mp_obj_fdfile_t, i.e. matching subset of
 // fields should have the same layout.
@@ -349,7 +346,6 @@ STATIC const mp_rom_map_elem_t usocket_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_fileno), MP_ROM_PTR(&socket_fileno_obj) },
     { MP_ROM_QSTR(MP_QSTR_makefile), MP_ROM_PTR(&socket_makefile_obj) },
     { MP_ROM_QSTR(MP_QSTR_read), MP_ROM_PTR(&mp_stream_read_obj) },
-    { MP_ROM_QSTR(MP_QSTR_readall), MP_ROM_PTR(&mp_stream_readall_obj) },
     { MP_ROM_QSTR(MP_QSTR_readinto), MP_ROM_PTR(&mp_stream_readinto_obj) },
     { MP_ROM_QSTR(MP_QSTR_readline), MP_ROM_PTR(&mp_stream_unbuffered_readline_obj) },
     { MP_ROM_QSTR(MP_QSTR_write), MP_ROM_PTR(&mp_stream_write_obj) },
@@ -383,27 +379,6 @@ const mp_obj_type_t mp_type_socket = {
     .protocol = &usocket_stream_p,
     .locals_dict = (mp_obj_dict_t*)&usocket_locals_dict,
 };
-
-#if MICROPY_SOCKET_EXTRA
-STATIC mp_obj_t mod_socket_htons(mp_obj_t arg) {
-    return MP_OBJ_NEW_SMALL_INT(htons(MP_OBJ_SMALL_INT_VALUE(arg)));
-}
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_socket_htons_obj, mod_socket_htons);
-
-
-STATIC mp_obj_t mod_socket_gethostbyname(mp_obj_t arg) {
-    assert(MP_OBJ_IS_TYPE(arg, &mp_type_str));
-    const char *s = mp_obj_str_get_str(arg);
-    struct hostent *h = gethostbyname(s);
-    if (h == NULL) {
-        // CPython: socket.herror
-        mp_raise_OSError(h_errno);
-    }
-    assert(h->h_length == 4);
-    return mp_obj_new_int(*(int*)*h->h_addr_list);
-}
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_socket_gethostbyname_obj, mod_socket_gethostbyname);
-#endif // MICROPY_SOCKET_EXTRA
 
 #define BINADDR_MAX_LEN sizeof(struct in6_addr)
 STATIC mp_obj_t mod_socket_inet_pton(mp_obj_t family_in, mp_obj_t addr_in) {
@@ -442,9 +417,7 @@ STATIC mp_obj_t mod_socket_inet_ntop(mp_obj_t family_in, mp_obj_t binaddr_in) {
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(mod_socket_inet_ntop_obj, mod_socket_inet_ntop);
 
 STATIC mp_obj_t mod_socket_getaddrinfo(size_t n_args, const mp_obj_t *args) {
-    // TODO: Implement all args
-    assert(n_args >= 2 && n_args <= 4);
-    assert(MP_OBJ_IS_STR(args[0]));
+    // TODO: Implement 5th and 6th args
 
     const char *host = mp_obj_str_get_str(args[0]);
     const char *serv = NULL;
@@ -511,7 +484,7 @@ STATIC mp_obj_t mod_socket_getaddrinfo(size_t n_args, const mp_obj_t *args) {
     freeaddrinfo(addr_list);
     return list;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_socket_getaddrinfo_obj, 2, 6, mod_socket_getaddrinfo);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_socket_getaddrinfo_obj, 2, 4, mod_socket_getaddrinfo);
 
 STATIC mp_obj_t mod_socket_sockaddr(mp_obj_t sockaddr_in) {
     mp_buffer_info_t bufinfo;
@@ -554,10 +527,6 @@ STATIC const mp_rom_map_elem_t mp_module_socket_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_inet_pton), MP_ROM_PTR(&mod_socket_inet_pton_obj) },
     { MP_ROM_QSTR(MP_QSTR_inet_ntop), MP_ROM_PTR(&mod_socket_inet_ntop_obj) },
     { MP_ROM_QSTR(MP_QSTR_sockaddr), MP_ROM_PTR(&mod_socket_sockaddr_obj) },
-#if MICROPY_SOCKET_EXTRA
-    { MP_ROM_QSTR(MP_QSTR_htons), MP_ROM_PTR(&mod_socket_htons_obj) },
-    { MP_ROM_QSTR(MP_QSTR_gethostbyname), MP_ROM_PTR(&mod_socket_gethostbyname_obj) },
-#endif
 
 #define C(name) { MP_ROM_QSTR(MP_QSTR_ ## name), MP_ROM_INT(name) }
     C(AF_UNIX),
