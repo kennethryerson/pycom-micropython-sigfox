@@ -54,7 +54,7 @@ print(b"hello!" not in bdev.data)
 vfs = uos.VfsFat(bdev)
 uos.mount(vfs, "/ramdisk")
 
-print("statvfs:", vfs.statvfs("/ramdisk"))
+print("statvfs:", vfs.statvfs("/ramdisk")[:-1]) # max filename length is implementation dependent
 print("getcwd:", vfs.getcwd())
 
 try:

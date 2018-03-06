@@ -95,7 +95,7 @@ add(h, MAX - 2)
 dprint(h)
 l = pop_all(h)
 for i in range(len(l) - 1):
-    diff = ticks_diff(l[i + 1][0], l[i][0])
+    diff = ticks_diff(l[i][0], l[i + 1][0])
     assert diff > 0
 
 def edge_case(edge, offset):
@@ -104,7 +104,7 @@ def edge_case(edge, offset):
     add(h, ticks_add(edge, offset))
     dprint(h)
     l = pop_all(h)
-    diff = ticks_diff(l[1][0], l[0][0])
+    diff = ticks_diff(l[0][0], l[1][0])
     dprint(diff, diff > 0)
     return diff
 
