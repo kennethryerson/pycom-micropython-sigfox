@@ -55,8 +55,36 @@ include ../py/mkenv.mk
 
 CROSS_COMPILE = xtensa-esp32-elf-
 
+include espidf.mk
+
+ifneq ($(IDF_PATH),)
 ESP_IDF_PATH = $(IDF_PATH)
+else
+$(info The IDF_PATH variable has not been set, please set it to the root of the pycom-esp-idf repository.)
+$(info See README.md for installation instructions.)
+$(info Supported git hash: $(ESPIDF_SUPHASH))
+$(error IDF_PATH not set)
+endif
+
 ESP_IDF_COMP_PATH = $(ESP_IDF_PATH)/components
+
+# verify the ESP IDF version
+ESPIDF_CURHASH := $(shell git -C $(ESP_IDF_PATH) show -s --pretty=format:'%H')
+ifneq ($(ESPIDF_CURHASH),$(ESPIDF_SUPHASH))
+$(info Attempting to checkout ESP IDF supported version)
+tmp := $(shell git -C $(ESP_IDF_PATH) stash)
+tmp := $(shell git -C $(ESP_IDF_PATH) checkout $(ESPIDF_SUPHASH))
+ESPIDF_CURHASH := $(shell git -C $(ESP_IDF_PATH) show -s --pretty=format:'%H')
+endif
+
+ifneq ($(ESPIDF_CURHASH),$(ESPIDF_SUPHASH))
+$(info ** WARNING **)
+$(info The git hash of ESP IDF does not match the supported version)
+$(info The build may complete and the firmware may work but it is not guaranteed)
+$(info ESP IDF path:       $(ESP_IDF_PATH))
+$(info Current git hash:   $(ESPIDF_CURHASH))
+$(info Supported git hash: $(ESPIDF_SUPHASH))
+endif
 
 CFLAGS_XTENSA = -DESP_PLATFORM -Wpointer-arith -Wall -Werror=all -Wno-error=unused-function \
                 -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wl,-EL \
