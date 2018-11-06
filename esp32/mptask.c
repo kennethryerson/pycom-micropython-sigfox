@@ -38,6 +38,7 @@
 #include "readline.h"
 #include "esp32_mphal.h"
 #include "machuart.h"
+#include "machwdt.h"
 #include "machpin.h"
 #include "mpexception.h"
 #include "moduos.h"
@@ -80,6 +81,7 @@
 #include "freertos/queue.h"
 
 
+#include "lteppp.h"
 /******************************************************************************
  DECLARE EXTERNAL FUNCTIONS
  ******************************************************************************/
@@ -171,7 +173,7 @@ void TASK_Micropython (void *pvParameters) {
         for ( ; ; );
     }
 
-    alarm_preinit();
+    mach_timer_alarm_preinit();
     pin_preinit();
 
     wifi_on_boot = config_get_wifi_on_boot();
@@ -213,6 +215,13 @@ soft_reset:
         safeboot = boot_info.safeboot;
     }
     if (!soft_reset) {
+        if (config_get_wdt_on_boot()) {
+            uint32_t timeout_ms = config_get_wdt_on_boot_timeout();
+            if (timeout_ms < 0xFFFFFFFF) {
+                printf("Starting the WDT on boot\n");
+                machine_wdt_start(timeout_ms);
+            }
+        }
         if (wifi_on_boot) {
             mptask_enable_wifi_ap();
         }
@@ -254,10 +263,17 @@ soft_reset:
 
     pyexec_frozen_module("_boot.py");
 
-    if (!safeboot) {
+    if (!soft_reset) {
     #if defined(GPY) || defined (FIPY)
         modlte_init0();
+        if(config_get_lte_modem_enable_on_boot())
+        {
+        	lteppp_connect_modem();
+        }
     #endif
+    }
+
+    if (!safeboot) {
         // run boot.py
         int ret = pyexec_file("boot.py");
         if (ret & PYEXEC_FORCED_EXIT) {
@@ -330,7 +346,6 @@ soft_reset_exit:
  DEFINE PRIVATE FUNCTIONS
  ******************************************************************************/
 STATIC void mptask_preinit (void) {
-    mperror_pre_init();
     wlan_pre_init();
     xTaskCreatePinnedToCore(TASK_Servers, "Servers", SERVERS_STACK_LEN, NULL, SERVERS_PRIORITY, &svTaskHandle, 1);
 }
@@ -453,7 +468,7 @@ STATIC void mptask_enable_wifi_ap (void) {
 	uint8_t wifi_pwd[64];
 	config_get_wifi_pwd(wifi_pwd);
     wlan_setup (WIFI_MODE_AP, (wifi_ssid[0]==0x00) ? DEFAULT_AP_SSID : (const char*) wifi_ssid , WIFI_AUTH_WPA2_PSK, (wifi_pwd[0]==0x00) ? DEFAULT_AP_PASSWORD : (const char*) wifi_pwd ,
-                DEFAULT_AP_CHANNEL, ANTENNA_TYPE_INTERNAL, (wifi_ssid[0]==0x00) ? true:false);
+                DEFAULT_AP_CHANNEL, ANTENNA_TYPE_INTERNAL, (wifi_ssid[0]==0x00) ? true:false, false);
     mod_network_register_nic(&wlan_obj);
 }
 

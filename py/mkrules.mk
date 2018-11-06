@@ -106,15 +106,44 @@ ifneq ($(FROZEN_MPY_DIR),)
 $(TOP)/mpy-cross/mpy-cross: $(TOP)/py/*.[ch] $(TOP)/mpy-cross/*.[ch] $(TOP)/windows/fmode.c
 	$(Q)$(MAKE) -C $(TOP)/mpy-cross
 
+OS_NAME := $(shell uname -s)
+ifeq ($(OS_NAME), Linux)
 # make a list of all the .py files that need compiling and freezing
-FROZEN_MPY_PY_FILES := $(shell find -L $(FROZEN_MPY_DIR) -type f -name '*.py' | $(SED) -e 's=^$(FROZEN_MPY_DIR)/==')
+FROZEN_MPY_PY_FILES := $(shell find -L $(FROZEN_MPY_DIR)/Base/ -type f -name '*.py' | $(SED) -e 's/$(FROZEN_MPY_DIR)\/Base\///')
+FROZEN_MPY_PY_FILES += $(shell find -L $(FROZEN_MPY_DIR)/Common/ -type f -name '*.py' | $(SED) -e 's/$(FROZEN_MPY_DIR)\/Common\///')
+ifeq ($(BOARD), $(filter $(BOARD), GPY FIPY))
+FROZEN_MPY_PY_FILES += $(shell find -L $(FROZEN_MPY_DIR)/LTE/ -type f -name '*.py' | $(SED) -e 's/$(FROZEN_MPY_DIR)\/LTE\///')
+endif
+else
+# make a list of all the .py files that need compiling and freezing
+FROZEN_MPY_PY_FILES := $(shell find -L $(FROZEN_MPY_DIR)/Base/ -type f -name '*.py' | $(SED) -e 's=^$(FROZEN_MPY_DIR)\/Base\//==')
+FROZEN_MPY_PY_FILES += $(shell find -L $(FROZEN_MPY_DIR)/Common/ -type f -name '*.py' | $(SED) -e 's=^$(FROZEN_MPY_DIR)\/Common\//==')
+ifeq ($(BOARD), $(filter $(BOARD), GPY FIPY))
+FROZEN_MPY_PY_FILES += $(shell find -L $(FROZEN_MPY_DIR)/LTE/ -type f -name '*.py' | $(SED) -e 's=^$(FROZEN_MPY_DIR)\/LTE\//==')
+endif
+endif
+
 FROZEN_MPY_MPY_FILES := $(addprefix $(BUILD)/frozen_mpy/,$(FROZEN_MPY_PY_FILES:.py=.mpy))
 
 # to build .mpy files from .py files
-$(BUILD)/frozen_mpy/%.mpy: $(FROZEN_MPY_DIR)/%.py $(TOP)/mpy-cross/mpy-cross
+$(BUILD)/frozen_mpy/%.mpy: $(FROZEN_MPY_DIR)/Base/%.py $(TOP)/mpy-cross/mpy-cross
 	@$(ECHO) "MPY $<"
 	$(Q)$(MKDIR) -p $(dir $@)
-	$(Q)$(MPY_CROSS) -o $@ -s $(<:$(FROZEN_MPY_DIR)/%=%) $(MPY_CROSS_FLAGS) $<
+	$(Q)$(MPY_CROSS) -o $@ -s $(<:$(FROZEN_MPY_DIR)/Base/%=%) $(MPY_CROSS_FLAGS) $<
+
+# to build .mpy files from .py files
+$(BUILD)/frozen_mpy/%.mpy: $(FROZEN_MPY_DIR)/Common/%.py $(TOP)/mpy-cross/mpy-cross
+	@$(ECHO) "MPY $<"
+	$(Q)$(MKDIR) -p $(dir $@)
+	$(Q)$(MPY_CROSS) -o $@ -s $(<:$(FROZEN_MPY_DIR)/Common/%=%) $(MPY_CROSS_FLAGS) $<
+
+ifeq ($(BOARD), $(filter $(BOARD), GPY FIPY))
+# to build .mpy files from .py files
+$(BUILD)/frozen_mpy/%.mpy: $(FROZEN_MPY_DIR)/LTE/%.py $(TOP)/mpy-cross/mpy-cross
+	@$(ECHO) "MPY $<"
+	$(Q)$(MKDIR) -p $(dir $@)
+	$(Q)$(MPY_CROSS) -o $@ -s $(<:$(FROZEN_MPY_DIR)/LTE/%=%) $(MPY_CROSS_FLAGS) $<
+endif
 
 # to build frozen_mpy.c from all .mpy files
 $(BUILD)/frozen_mpy.c: $(FROZEN_MPY_MPY_FILES) $(BUILD)/genhdr/qstrdefs.generated.h

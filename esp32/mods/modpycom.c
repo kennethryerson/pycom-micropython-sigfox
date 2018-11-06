@@ -28,6 +28,7 @@
 #include "freertos/task.h"
 
 #include "antenna.h"
+#include "py/mphal.h"
 
 #include <string.h>
 
@@ -35,6 +36,8 @@ extern led_info_t led_info;
 
 
 #define NVS_NAMESPACE                           "PY_NVM"
+
+#define WDT_ON_BOOT_MIN_TIMEOUT_MS              (5000)
 
 static nvs_handle pycom_nvs_handle;
 
@@ -51,6 +54,11 @@ void modpycom_init0(void) {
 STATIC mp_obj_t mod_pycom_heartbeat (mp_uint_t n_args, const mp_obj_t *args) {
     if (n_args) {
         mperror_enable_heartbeat (mp_obj_is_true(args[0]));
+        if (!mp_obj_is_true(args[0])) {
+            do {
+                mp_hal_delay_ms(2);
+            } while (!mperror_heartbeat_disable_done());
+       }
     } else {
         return mp_obj_new_bool(mperror_is_heartbeat_enabled());
     }
@@ -104,6 +112,12 @@ STATIC mp_obj_t mod_pycom_ota_verify (void) {
     return mp_obj_new_bool(ret_val);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_pycom_ota_verify_obj, mod_pycom_ota_verify);
+
+STATIC mp_obj_t mod_pycom_ota_slot (void) {
+    int ota_slot = updater_ota_next_slot_address();
+    return mp_obj_new_int(ota_slot);
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_pycom_ota_slot_obj, mod_pycom_ota_slot);
 
 STATIC mp_obj_t mod_pycom_pulses_get (mp_obj_t gpio, mp_obj_t timeout) {
     rmt_config_t rmt_rx;
@@ -204,14 +218,38 @@ STATIC mp_obj_t mod_pycom_wifi_on_boot (mp_uint_t n_args, const mp_obj_t *args) 
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_pycom_wifi_on_boot_obj, 0, 1, mod_pycom_wifi_on_boot);
 
+STATIC mp_obj_t mod_pycom_wdt_on_boot (mp_uint_t n_args, const mp_obj_t *args) {
+    if (n_args) {
+        config_set_wdt_on_boot (mp_obj_is_true(args[0]));
+    } else {
+        return mp_obj_new_bool(config_get_wdt_on_boot());
+    }
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_pycom_wdt_on_boot_obj, 0, 1, mod_pycom_wdt_on_boot);
+
+STATIC mp_obj_t mod_pycom_wdt_on_boot_timeout (mp_uint_t n_args, const mp_obj_t *args) {
+    if (n_args) {
+        uint32_t timeout_ms = mp_obj_get_int(args[0]);
+        if (timeout_ms < WDT_ON_BOOT_MIN_TIMEOUT_MS) {
+            nlr_raise(mp_obj_new_exception_msg(&mp_type_ValueError, "WDT on boot timeout must be >= 5000 ms"));
+        }
+        config_set_wdt_on_boot_timeout (timeout_ms);
+    } else {
+        return mp_obj_new_int_from_uint(config_get_wdt_on_boot_timeout());
+    }
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_pycom_wdt_on_boot_timeout_obj, 0, 1, mod_pycom_wdt_on_boot_timeout);
+
 STATIC mp_obj_t mod_pycom_wifi_ssid (mp_uint_t n_args, const mp_obj_t *args) {
     if (n_args) {
-    		const char *wifi_ssid = mp_obj_str_get_str(args[0]);
-    		config_set_wifi_ssid ((const uint8_t*)wifi_ssid);
+        const char *wifi_ssid = mp_obj_str_get_str(args[0]);
+        config_set_wifi_ssid ((const uint8_t*)wifi_ssid);
     } else {
-    		uint8_t wifi_ssid[32];
-    		config_get_wifi_ssid(wifi_ssid);
-    		return mp_obj_new_str((const char*)wifi_ssid,strlen((const char*)wifi_ssid));
+    	uint8_t wifi_ssid[32];
+    	config_get_wifi_ssid(wifi_ssid);
+    	return mp_obj_new_str((const char*)wifi_ssid,strlen((const char*)wifi_ssid));
     }
     return mp_const_none;
 }
@@ -219,12 +257,12 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_pycom_wifi_ssid_obj, 0, 1, mod_py
 
 STATIC mp_obj_t mod_pycom_wifi_pwd (mp_uint_t n_args, const mp_obj_t *args) {
     if (n_args) {
-    		const char *wifi_pwd = mp_obj_str_get_str(args[0]);
-    		config_set_wifi_pwd ((const uint8_t*)wifi_pwd);
+        const char *wifi_pwd = mp_obj_str_get_str(args[0]);
+        config_set_wifi_pwd ((const uint8_t*)wifi_pwd);
     } else {
-    		uint8_t wifi_pwd[64];
-    		config_get_wifi_pwd(wifi_pwd);
-    		return mp_obj_new_str((const char*)wifi_pwd,strlen((const char*)wifi_pwd));
+    	uint8_t wifi_pwd[64];
+    	config_get_wifi_pwd(wifi_pwd);
+    	return mp_obj_new_str((const char*)wifi_pwd,strlen((const char*)wifi_pwd));
     }
     return mp_const_none;
 }
@@ -232,13 +270,23 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_pycom_wifi_pwd_obj, 0, 1, mod_pyc
 
 STATIC mp_obj_t mod_pycom_heartbeat_on_boot (mp_uint_t n_args, const mp_obj_t *args) {
     if (n_args) {
-    		config_set_heartbeat_on_boot (mp_obj_is_true(args[0]));
+        config_set_heartbeat_on_boot (mp_obj_is_true(args[0]));
     } else {
         return mp_obj_new_bool(config_get_heartbeat_on_boot());
     }
     return mp_const_none;
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_pycom_heartbeat_on_boot_obj, 0, 1, mod_pycom_heartbeat_on_boot);
+
+STATIC mp_obj_t mod_pycom_lte_modem_on_boot (mp_uint_t n_args, const mp_obj_t *args) {
+    if (n_args) {
+        config_set_lte_modem_enable_on_boot (mp_obj_is_true(args[0]));
+    } else {
+        return mp_obj_new_bool(config_get_lte_modem_enable_on_boot());
+    }
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_pycom_lte_modem_on_boot_obj, 0, 1, mod_pycom_lte_modem_on_boot);
 
 STATIC const mp_rom_map_elem_t pycom_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__),            			MP_ROM_QSTR(MP_QSTR_pycom) },
@@ -248,15 +296,19 @@ STATIC const mp_rom_map_elem_t pycom_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_ota_write),           			MP_ROM_PTR(&mod_pycom_ota_write_obj) },
     { MP_ROM_QSTR(MP_QSTR_ota_finish),          			MP_ROM_PTR(&mod_pycom_ota_finish_obj) },
     { MP_ROM_QSTR(MP_QSTR_ota_verify),          			MP_ROM_PTR(&mod_pycom_ota_verify_obj) },
+    { MP_ROM_QSTR(MP_QSTR_ota_slot),                        MP_ROM_PTR(&mod_pycom_ota_slot_obj) },
     { MP_ROM_QSTR(MP_QSTR_pulses_get),          			MP_ROM_PTR(&mod_pycom_pulses_get_obj) },
     { MP_ROM_QSTR(MP_QSTR_nvs_set),             			MP_ROM_PTR(&mod_pycom_nvs_set_obj) },
     { MP_ROM_QSTR(MP_QSTR_nvs_get),             			MP_ROM_PTR(&mod_pycom_nvs_get_obj) },
     { MP_ROM_QSTR(MP_QSTR_nvs_erase),           			MP_ROM_PTR(&mod_pycom_nvs_erase_obj) },
     { MP_ROM_QSTR(MP_QSTR_nvs_erase_all),       			MP_ROM_PTR(&mod_pycom_nvs_erase_all_obj) },
     { MP_ROM_QSTR(MP_QSTR_wifi_on_boot),        			MP_ROM_PTR(&mod_pycom_wifi_on_boot_obj) },
+    { MP_ROM_QSTR(MP_QSTR_wdt_on_boot),                     MP_ROM_PTR(&mod_pycom_wdt_on_boot_obj) },
+    { MP_ROM_QSTR(MP_QSTR_wdt_on_boot_timeout),             MP_ROM_PTR(&mod_pycom_wdt_on_boot_timeout_obj) },
     { MP_ROM_QSTR(MP_QSTR_wifi_ssid),        	   			MP_ROM_PTR(&mod_pycom_wifi_ssid_obj) },
     { MP_ROM_QSTR(MP_QSTR_wifi_pwd),        	   			MP_ROM_PTR(&mod_pycom_wifi_pwd_obj) },
     { MP_ROM_QSTR(MP_QSTR_heartbeat_on_boot),        		MP_ROM_PTR(&mod_pycom_heartbeat_on_boot_obj) },
+	{ MP_ROM_QSTR(MP_QSTR_lte_modem_en_on_boot),            MP_ROM_PTR(&mod_pycom_lte_modem_on_boot_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(pycom_module_globals, pycom_module_globals_table);

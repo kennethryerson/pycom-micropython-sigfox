@@ -79,8 +79,12 @@ extern void lteppp_deinit (void);
 
 extern void lteppp_send_at_command (lte_task_cmd_data_t *cmd, lte_task_rsp_data_t *rsp);
 
-extern bool lteppp_wait_at_rsp (const char *expected_rsp, uint32_t timeout);
+extern bool lteppp_wait_at_rsp (const char *expected_rsp, uint32_t timeout, bool from_mp);
 
 extern bool lteppp_task_ready(void);
+
+void lteppp_connect_modem (void);
+
+bool lteppp_is_modem_connected(void);
 
 #endif  // _LTEPPP_H_

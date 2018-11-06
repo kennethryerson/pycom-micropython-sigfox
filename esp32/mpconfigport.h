@@ -68,6 +68,7 @@
 #define MICROPY_PY_BUILTINS_EXECFILE                (1)
 #define MICROPY_PY_BUILTINS_HELP                    (1)
 #define MICROPY_PY_BUILTINS_HELP_TEXT               pycom_help_text
+#define MICROPY_PY_WEBSOCKET                        (1)
 #define MICROPY_PY___FILE__                         (1)
 #define MICROPY_PY_GC                               (1)
 #define MICROPY_PY_ARRAY                            (1)

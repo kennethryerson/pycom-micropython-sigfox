@@ -72,7 +72,7 @@
                                                         return -1;              \
                                                     }
 
-#define OVER_THE_AIR_ACTIVATION_DUTYCYCLE           15000  // 15 [s] value in ms
+#define OVER_THE_AIR_ACTIVATION_DUTYCYCLE           10000  // 10 [s] value in ms
 
 #define DEF_LORAWAN_NETWORK_ID                      0
 #define DEF_LORAWAN_APP_PORT                        2
@@ -247,7 +247,7 @@ static const char *modlora_nvs_data_key[E_LORA_NVS_NUM_KEYS] = { "JOINED", "UPLN
                                                                  "NWSKEY", "APPSKEY", "NETID", "ADRACK",
                                                                  "MACPARAMS", "CHANNELS", "SRVACK", "MACNXTTX",
                                                                  "MACBUFIDX", "MACRPTIDX", "MACBUF", "MACRPTBUF",
-                                                                 "REGION" };
+                                                                 "REGION", "CHANMASK", "CHANMASKREM" };
 
 /******************************************************************************
  DECLARE PUBLIC DATA
@@ -665,8 +665,6 @@ static void OnTxNextActReqTimerEvent(void) {
             lora_obj.ComplianceTest.Running = false;
             lora_obj.ComplianceTest.DownLinkCounter = 0;
         } else {
-            // Since this is a retry, let the stack choose the DR from this moment onwards
-            lora_obj.otaa_dr = 0xFF;
             lora_obj.state = E_LORA_STATE_JOIN;
         }
     }
@@ -681,7 +679,7 @@ static void TASK_LoRa (void *pvParameters) {
     lora_obj.pwr_mode = E_LORA_MODE_ALWAYS_ON;
 
     for ( ; ; ) {
-        vTaskDelay (1 / portTICK_PERIOD_MS);
+        vTaskDelay (2 / portTICK_PERIOD_MS);
 
         switch (lora_obj.state) {
         case E_LORA_STATE_NOINIT:
@@ -753,6 +751,17 @@ static void TASK_LoRa (void *pvParameters) {
                                 LoRaMacGetChannelList(&channels, &length);
                                 modlora_nvs_get_blob(E_LORA_NVS_ELE_CHANNELS, channels, &length);
 
+                                // write the channel mask directly from the NVRAM
+                                uint16_t *channelmask;
+                                if (LoRaMacGetChannelsMask(&channelmask, &length)) {
+                                    modlora_nvs_get_blob(E_LORA_NVS_ELE_CHANNELMASK, channelmask, &length);
+                                }
+
+                                // write the channel mask remaining directly from the NVRAM
+                                if (LoRaMacGetChannelsMaskRemaining(&channelmask, &length)) {
+                                    modlora_nvs_get_blob(E_LORA_NVS_ELE_CHANNELMASK_REMAINING, channelmask, &length);
+                                }
+
                                 uint32_t srv_ack_req;
                                 modlora_nvs_get_uint(E_LORA_NVS_ELE_ACK_REQ, (uint32_t *)&srv_ack_req);
                                 bool *ack_req = LoRaMacGetSrvAckRequested();
@@ -781,11 +790,11 @@ static void TASK_LoRa (void *pvParameters) {
                                 *buffer_idx = mac_cmd_buffer_idx;
 
                                 // write the buffered MAC commads directly from NVRAM
-                                length = 15;
+                                length = 128;
                                 modlora_nvs_get_blob(E_LORA_NVS_ELE_MAC_BUF, (void *)LoRaMacGetMacCmdBuffer(), &length);
 
                                 // write the buffered MAC commads to repeat directly from NVRAM
-                                length = 15;
+                                length = 128;
                                 modlora_nvs_get_blob(E_LORA_NVS_ELE_MAC_RPT_BUF, (void *)LoRaMacGetMacCmdBufferRepeat(), &length);
 
                                 lora_obj.activation = E_LORA_ACTIVATION_ABP;
@@ -1440,9 +1449,8 @@ static mp_obj_t lora_init_helper(lora_obj_t *self, const mp_arg_val_t *args) {
     if (args[14].u_obj == MP_OBJ_NULL) {
         cmd_data.info.init.region = config_get_lora_region();
         if (cmd_data.info.init.region == 0xff) {
-    			nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, "no region specified and no default found in config block"));
-    		}
-
+            nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, "no region specified and no default found in config block"));
+        }
     } else {
         cmd_data.info.init.region = mp_obj_get_int(args[14].u_obj);
     }
